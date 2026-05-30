@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+:root{
+  --bg:#0e0f12;--bg2:#161820;--bg3:#1e2028;--surface:#22242e;--border:#2e3040;
+  --text:#e8eaf2;--text2:#9499b0;--text3:#5a5f78;
+  --accent:#5b9cf6;--green:#38c97a;--amber:#f5a623;--red:#e84848;
+  --green-bg:rgba(56,201,122,.1);--amber-bg:rgba(245,166,35,.1);--red-bg:rgba(232,72,72,.1);
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+}
+[data-theme="light"]{
+  --bg:#f4f5f8;--bg2:#fff;--bg3:#eceef4;--surface:#fff;--border:#dde0ec;
+  --text:#1a1d2e;--text2:#5a5f78;--text3:#9499b0;
+  --accent:#2d6ee0;--green:#1fa85c;--amber:#c17d0a;--red:#c42b2b;
+  --green-bg:rgba(31,168,92,.1);--amber-bg:rgba(193,125,10,.1);--red-bg:rgba(196,43,43,.1);
+  --shadow:0 4px 24px rgba(0,0,0,.1);
+}
+.app-shell{max-width:640px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
+.app-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0;position:sticky;top:0;z-index:100;background:var(--bg)}
+.app-wordmark{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.12em;color:var(--text)}
+.app-wordmark span{color:var(--accent)}
+.theme-toggle{width:34px;height:34px;background:var(--surface);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:.95rem}
+.tab-nav{display:flex;gap:4px;padding:14px 20px 0;border-bottom:1px solid var(--border);position:sticky;top:52px;z-index:99;background:var(--bg)}
+.tab-btn{font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:8px 14px 10px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--text2)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none;padding:24px 20px}
+.tab-panel.active{display:block}
+.hero-statement{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1.1;letter-spacing:.04em;color:var(--text);margin-bottom:10px}
+.hero-statement span{color:var(--accent)}
+.hero-sub{font-size:.85rem;color:var(--text2);line-height:1.65;margin-bottom:24px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;color:var(--text);margin-bottom:4px}
+.section-sub{font-size:.82rem;color:var(--text2);margin-bottom:16px}
+.divider{height:1px;background:var(--border);margin:22px 0}
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.signal-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.signal-label{font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.signal-label.cortisol{color:var(--amber)}
+.signal-label.insulin{color:var(--accent)}
+.signal-name{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.06em;color:var(--text);margin-bottom:7px}
+.signal-desc{font-size:.78rem;color:var(--text2);line-height:1.5}
+.callout{border-radius:12px;padding:16px;margin-bottom:14px}
+.callout.blue{background:linear-gradient(135deg,rgba(91,156,246,.12),rgba(91,156,246,.04));border:1px solid rgba(91,156,246,.25)}
+.callout.amber-c{background:var(--amber-bg);border:1px solid rgba(245,166,35,.25)}
+.callout-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;margin-bottom:8px}
+.callout.blue .callout-title{color:var(--accent)}
+.callout.amber-c .callout-title{color:var(--amber)}
+.callout p{font-size:.79rem;color:var(--text2);line-height:1.6}
+.callout p+p{margin-top:8px}
+.keywords-section{margin-bottom:28px}
+.keywords-intro{font-size:.78rem;color:var(--text2);margin-bottom:14px}
+.keyword-grid{display:flex;flex-wrap:wrap;gap:8px;position:relative}
+.kw-item{position:relative;cursor:pointer}
+.kw-word{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all .2s;user-select:none;display:flex;align-items:center;gap:6px}
+.kw-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.kw-dot.green{background:var(--green)}
+.kw-dot.amber{background:var(--amber)}
+.kw-dot.red{background:var(--red)}
+.kw-item:hover .kw-word,.kw-item.open .kw-word{color:var(--accent);border-color:var(--accent);background:rgba(91,156,246,.08)}
+.kw-panel{display:none;position:absolute;top:calc(100% + 8px);left:0;z-index:50;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;width:270px;box-shadow:var(--shadow)}
+.kw-item.open .kw-panel{display:block}
+.kw-panel-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.kw-panel-body{font-size:.79rem;color:var(--text2);line-height:1.55}
+.sleep-callout{background:linear-gradient(135deg,rgba(91,156,246,.12),rgba(91,156,246,.04));border:1px solid rgba(91,156,246,.25);border-radius:12px;padding:16px;margin-top:20px}
+.sleep-callout-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.sleep-callout p{font-size:.79rem;color:var(--text2);line-height:1.6}
+.sleep-callout p+p{margin-top:8px}
+/* SIMULATOR */
+.sim-top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.sim-select{font-family:'DM Sans',sans-serif;font-size:.78rem;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;outline:none}
+.scenario-row{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.scenario-btn{font-family:'DM Sans',sans-serif;font-size:.72rem;font-weight:600;padding:6px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.scenario-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(91,156,246,.1)}
+.outcome-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.oc-label{font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.oc-value{font-size:.88rem;font-weight:600}
+.oc-value.green{color:var(--green)}
+.oc-value.amber{color:var(--amber)}
+.oc-value.red{color:var(--red)}
+.sim-toggles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.sim-chip{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface);cursor:pointer;user-select:none;transition:all .2s}
+.sim-chip.on{border-color:var(--green);background:var(--green-bg)}
+.sim-chip span{font-size:.71rem;font-weight:600;color:var(--text2);transition:color .2s}
+.sim-chip.on span{color:var(--green)}
+.sim-pip{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .2s}
+.sim-chip.on .sim-pip{background:var(--green)}
+.chart-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 10px 6px;position:relative;margin-bottom:8px}
+.chart-legend{display:flex;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:.69rem;color:var(--text2)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.legend-dot.cortisol{background:var(--amber)}
+.legend-dot.insulin{background:var(--accent)}
+canvas#mainChart{width:100%;height:200px;display:block;cursor:crosshair}
+.feel-strip-wrap{position:relative;height:26px;margin-top:2px}
+.feel-strip{position:absolute;left:0;right:0;height:100%}
+.feel-seg{display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border-radius:3px;overflow:hidden;white-space:nowrap;position:absolute;height:100%}
+.feel-seg.green{background:var(--green-bg);color:var(--green)}
+.feel-seg.amber{background:var(--amber-bg);color:var(--amber)}
+.feel-seg.red{background:var(--red-bg);color:var(--red)}
+.time-axis{position:relative;height:20px;margin-top:2px}
+.time-label{position:absolute;font-size:.62rem;color:var(--text3);transform:translateX(-50%)}
+.tt{position:fixed;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:.74rem;pointer-events:none;z-index:200;max-width:220px;display:none;box-shadow:var(--shadow)}
+.tt-time{font-weight:700;color:var(--text);margin-bottom:5px}
+.tt-row{display:flex;justify-content:space-between;gap:12px;margin-bottom:2px}
+.tt-lbl{color:var(--text2)}
+.tt-zone{font-weight:600}
+.tt-zone.green{color:var(--green)}
+.tt-zone.amber{color:var(--amber)}
+.tt-zone.red{color:var(--red)}
+.fasting-note{font-size:.76rem;color:var(--text2);margin-top:10px;padding:8px 12px;background:rgba(91,156,246,.07);border-radius:8px;border-left:3px solid var(--accent)}
+.fasting-note strong{color:var(--accent)}
+/* MY PLAN */
+.fat-note{background:var(--amber-bg);border:1px solid rgba(245,166,35,.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:.78rem;color:var(--text2);line-height:1.5}
+.fat-note strong{color:var(--amber)}
+.window-wrap{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px}
+.window-hdr{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.window-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.window-endpoints{font-size:.9rem;font-weight:600;color:var(--text)}
+.window-fast{font-size:.78rem;color:var(--accent);font-weight:600}
+.window-warn{font-size:.72rem;color:var(--amber);margin-top:4px;display:none}
+.dual-range{position:relative;height:34px}
+.dual-range input[type=range]{position:absolute;width:100%;height:4px;background:transparent;-webkit-appearance:none;appearance:none;pointer-events:none;top:50%;transform:translateY(-50%)}
+.dual-range input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);border:2px solid var(--bg2);cursor:pointer;pointer-events:all;box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.dual-range input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:2px solid var(--bg2);cursor:pointer;pointer-events:all;box-shadow:0 1px 6px rgba(0,0,0,.3)}
+.r-track{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--border);border-radius:2px;left:0;right:0}
+.r-fill{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--accent);border-radius:2px}
+.r-opt{position:absolute;top:50%;transform:translateY(-50%);height:4px;background:var(--green);border-radius:2px;opacity:.3}
+.window-hint{font-size:.7rem;color:var(--text3);margin-top:6px}
+.day-selector{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.day-btn{font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:600;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:all .2s}
+.day-btn small{display:block;font-size:.62rem;color:var(--text3);font-weight:400;margin-top:1px}
+.day-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(91,156,246,.1)}
+.day-btn.active small{color:rgba(91,156,246,.65)}
+.timeline-list{list-style:none}
+.tl-item{display:flex;position:relative}
+.tl-left{display:flex;flex-direction:column;align-items:center;width:52px;flex-shrink:0}
+.tl-time{font-size:.67rem;font-weight:700;color:var(--text3);text-align:center;line-height:1;padding-top:2px;white-space:nowrap}
+.tl-line{width:2px;background:var(--border);flex:1;min-height:20px;margin-top:6px}
+.tl-item:last-child .tl-line{background:transparent}
+.tl-dot{position:absolute;left:36px;top:3px;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg)}
+.tl-dot.green{background:var(--green)}
+.tl-dot.amber{background:var(--amber)}
+.tl-dot.accent{background:var(--accent)}
+.tl-dot.red{background:var(--red)}
+.tl-right{flex:1;padding:0 0 16px 18px}
+.tl-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color .2s}
+.tl-card:hover{border-color:var(--accent)}
+.tl-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.tl-card-title{font-size:.83rem;font-weight:600;color:var(--text);line-height:1.35}
+.tl-card-sub{font-size:.73rem;color:var(--text2);margin-top:2px}
+.tl-icon{font-size:.68rem;color:var(--text3);flex-shrink:0;transition:transform .2s}
+.tl-foods{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);display:none}
+.tl-card.open .tl-foods{display:block}
+.tl-foods-lbl{font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.tl-foods-list{list-style:none}
+.tl-foods-list li{font-size:.78rem;color:var(--text2);padding:3px 0;display:flex;gap:6px;align-items:flex-start}
+.tl-foods-list li::before{content:'·';color:var(--text3);flex-shrink:0}
+/* FOOD */
+.moments-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.moment-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .2s}
+.moment-card:hover,.moment-card.open{border-color:var(--accent)}
+.moment-icon{font-size:1.4rem;margin-bottom:6px}
+.moment-name{font-size:.83rem;font-weight:700;color:var(--text);margin-bottom:3px}
+.moment-tagline{font-size:.72rem;color:var(--text2)}
+.moment-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.moment-card.open .moment-detail{display:block}
+.moment-items{list-style:none}
+.moment-items li{font-size:.78rem;color:var(--text2);padding:5px 0;border-bottom:1px solid var(--border);line-height:1.4}
+.moment-items li:last-child{border-bottom:none}
+.moment-items li strong{color:var(--text)}
+.moment-note{font-size:.7rem;color:var(--text3);display:block;margin-top:2px}
+.protein-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.protein-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}
+.protein-icon{font-size:1.2rem;margin-bottom:5px}
+.protein-name{font-size:.78rem;font-weight:600;color:var(--text);margin-bottom:2px}
+.protein-amount{font-size:.71rem;color:var(--accent);font-weight:700}
+.protein-note{font-size:.69rem;color:var(--text2);margin-top:3px}
+.hier-section{margin-bottom:18px}
+.hier-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.hier-list{list-style:none}
+.hier-list li{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:.79rem;color:var(--text2)}
+.hier-list li:last-child{border-bottom:none}
+.hier-rank{font-family:'Bebas Neue',sans-serif;font-size:.9rem;width:18px;flex-shrink:0;color:var(--text3)}
+.hier-rank.best{color:var(--green)}
+.hier-note{font-size:.7rem;color:var(--text3);display:block;margin-top:1px}
+.ai-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;margin-bottom:10px;color:var(--text)}
+.ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.ai-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.ai-icon{font-size:1.1rem}
+.ai-name{font-size:.69rem;font-weight:600;color:var(--text);margin-top:4px}
+.ai-why{font-size:.63rem;color:var(--text2);margin-top:2px;line-height:1.3}
+.fuel-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px}
+.fuel-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.08em;color:var(--text);margin-bottom:4px}
+.fuel-sub{font-size:.75rem;color:var(--text2);margin-bottom:12px}
+.fuel-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fuel-lbl{font-size:.79rem;color:var(--text);min-width:72px}
+.fuel-sel{font-family:'DM Sans',sans-serif;font-size:.78rem;background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:5px 10px;outline:none;cursor:pointer;flex:1}
+.fuel-result{background:var(--bg3);border-radius:10px;padding:12px;margin-top:4px}
+.fuel-rtitle{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.fuel-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.fuel-phase{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.fuel-phase.before{background:var(--amber-bg);color:var(--amber)}
+.fuel-phase.during{background:var(--green-bg);color:var(--green)}
+.fuel-phase.after{background:rgba(91,156,246,.12);color:var(--accent)}
+.fuel-text{font-size:.78rem;color:var(--text2);line-height:1.45}
+.fuel-athlete{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:.74rem;color:var(--text2);font-style:italic;line-height:1.5}
+@media(max-width:400px){
+  .signal-grid,.protein-grid,.moments-grid{grid-template-columns:1fr}
+  .ai-grid{grid-template-columns:repeat(2,1fr)}
+  .tab-btn{font-size:.68rem;padding:8px 9px 10px}
+  .hero-statement{font-size:1.6rem}
+}
+</style>
+</head>
+<body>
+<div class="app-shell">
+
+<header class="app-header">
+  <div class="app-wordmark">Energy<span>Protocol</span></div>
+  <button class="theme-toggle" onclick="toggleTheme()"><span id="themeIcon">☀</span></button>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('science',this)">Science</button>
+  <button class="tab-btn" onclick="showTab('simulator',this)">Simulator</button>
+  <button class="tab-btn" onclick="showTab('plan',this)">My Plan</button>
+  <button class="tab-btn" onclick="showTab('food',this)">Food</button>
+</nav>
+
+<!-- SCIENCE -->
+<section class="tab-panel active" id="tab-science">
+  <div class="hero-statement">Same calories.<br><span>Different outcome.</span></div>
+  <p class="hero-sub">The order you eat, the time you eat, and how well you sleep change what your body does with every calorie. Not a little. Measurably. This protocol changes the conditions -- not the calories.</p>
+
+  <div class="signal-grid">
+    <div class="signal-card">
+      <div class="signal-label cortisol">Energy Signal</div>
+      <div class="signal-name">Cortisol</div>
+      <div class="signal-desc">Mobilises stored fuel. Peaks at wake-up. Falls through the day. High at night disrupts recovery and blocks fat metabolism.</div>
+    </div>
+    <div class="signal-card">
+      <div class="signal-label insulin">Storage Signal</div>
+      <div class="signal-name">Insulin</div>
+      <div class="signal-desc">Moves glucose into cells. Every meal triggers it. Chronically elevated, it locks fat in storage and mutes the energy signal.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="keywords-section">
+    <p class="keywords-intro">Eight reasons most days go wrong. Tap any one.</p>
+    <div class="keyword-grid" id="kwGrid"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sleep-callout">
+    <div class="sleep-callout-title">Sleep Is a Metabolic Intervention</div>
+    <p>One night under six hours puts your energy and storage signals in the same state as early insulin resistance. Not metaphorically -- the same impaired glucose clearance, the same elevated baseline, the same compromised fat oxidation.</p>
+    <p>Poor sleep does not just make you tired. It makes you metabolically dysfunctional. Every part of this protocol works better when sleep is treated as training.</p>
+  </div>
+
+  <div class="callout amber-c" style="margin-top:12px">
+    <div class="callout-title">The Afternoon Nap Problem</div>
+    <p>A nap under 20 minutes before 3pm is neutral to slightly beneficial. Anything longer, or after 3pm, suppresses the sleep pressure your body needs that night. One compensatory nap creates the conditions for the next bad night. If you are relying on afternoon naps regularly, the problem is the night before -- not the afternoon.</p>
+  </div>
+
+  <div class="callout blue" style="margin-top:12px">
+    <div class="callout-title">Does This Apply to Me?</div>
+    <p><strong style="color:var(--text)">Women:</strong> the same rules apply. Carb tolerance and sleep quality shift across the menstrual cycle -- the luteal phase typically brings lower tolerance and lighter sleep. Treat the fasting recommendation as a range (12 to 16 hours) rather than a fixed number, and allow more flexibility on high-stress or low-sleep days.</p>
+    <p><strong style="color:var(--text)">With age:</strong> insulin sensitivity naturally declines from the mid-40s. The protocol becomes more important, not less -- the same interventions produce a larger effect because the baseline is more fragile. The 30g protein target per meal is more critical at 50 than at 30, as muscle protein synthesis slows with age.</p>
+  </div>
+</section>
+
+<!-- SIMULATOR -->
+<section class="tab-panel" id="tab-simulator">
+  <div class="section-title">36-Hour Window</div>
+  <p class="section-sub">From 6pm yesterday to 6am tomorrow. What you did last night sets up today.</p>
+
+  <div class="sim-top">
+    <select class="sim-select" id="sportSelect" onchange="setSport(this.value)">
+      <option value="cycling">Cycling</option>
+      <option value="running">Running</option>
+      <option value="workout">Workout</option>
+    </select>
+    <select class="sim-select" id="dayTypeSelect" onchange="setDayType(this.value)">
+      <option value="rest">Rest day</option>
+      <option value="training">Training day</option>
+    </select>
+    <select class="sim-select" id="sessionTimeSelect" onchange="drawChart()">
+      <option value="morning">Morning session</option>
+      <option value="midday">Midday session</option>
+      <option value="evening">Evening session</option>
+    </select>
+  </div>
+
+  <div class="scenario-row">
+    <button class="scenario-btn active" onclick="setScenario('unmanaged',this)">Unmanaged</button>
+    <button class="scenario-btn" onclick="setScenario('realistic',this)">Realistic</button>
+    <button class="scenario-btn" onclick="setScenario('managed',this)">Managed</button>
+    <button class="scenario-btn" onclick="setScenario('ideal',this)">Ideal</button>
+  </div>
+
+  <div class="outcome-card" id="outcomeCard"></div>
+
+  <div class="sim-toggles">
+    <div class="sim-chip" id="chip-foodOrder" onclick="toggleSim('foodOrder')"><div class="sim-pip"></div><span>Food order</span></div>
+    <div class="sim-chip" id="chip-walk" onclick="toggleSim('walk')"><div class="sim-pip"></div><span>Walk after meals</span></div>
+    <div class="sim-chip" id="chip-protein" onclick="toggleSim('protein')"><div class="sim-pip"></div><span>Protein AM</span></div>
+    <div class="sim-chip" id="chip-sleep" onclick="toggleSim('sleep')"><div class="sim-pip"></div><span>Sleep 7hrs+</span></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot cortisol"></div>Energy signal (cortisol)</div>
+      <div class="legend-item"><div class="legend-dot insulin"></div>Storage signal (insulin)</div>
+    </div>
+    <canvas id="mainChart"></canvas>
+    <div class="feel-strip-wrap"><div class="feel-strip" id="feelStrip"></div></div>
+    <div class="time-axis" id="timeAxis"></div>
+  </div>
+  <div class="fasting-note" id="fastingNote"></div>
+</section>
+
+<!-- MY PLAN -->
+<section class="tab-panel" id="tab-plan">
+  <div class="section-title">Today's Plan</div>
+  <p class="section-sub">Set your eating window. Pick your day type. Tap any block for food ideas.</p>
+
+  <div class="fat-note"><strong>On fat:</strong> when this plan says "fat" it means olive oil, avocado, eggs, nuts, and oily fish. These slow digestion and support signal management. They are not the cause of weight gain -- a chronically elevated storage signal is.</div>
+
+  <div class="window-wrap">
+    <div class="window-hdr">Your Eating Window</div>
+    <div class="window-row">
+      <div class="window-endpoints" id="windowEndpoints">12:00pm -- 8:00pm</div>
+      <div class="window-fast" id="windowFast">16-hr fast</div>
+    </div>
+    <div class="dual-range" id="dualRange">
+      <div class="r-track"></div>
+      <div class="r-opt" id="rOpt"></div>
+      <div class="r-fill" id="rFill"></div>
+      <input type="range" id="rangeStart" min="6" max="20" value="12" step="1">
+      <input type="range" id="rangeEnd" min="8" max="23" value="20" step="1">
+    </div>
+    <div class="window-warn" id="windowWarn">Eating past 8pm reduces overnight recovery. Optimal last meal: 7 to 8pm.</div>
+    <div class="window-hint">Drag the handles to match your day. The green band is the optimal window.</div>
+  </div>
+
+  <div class="day-selector">
+    <button class="day-btn active" onclick="setPlanDay('rest',this)">Rest Day<small>Active rest</small></button>
+    <button class="day-btn" onclick="setPlanDay('training',this)"><span id="trainLabel">Training Day</span><small>Moving, not training</small></button>
+    <button class="day-btn" onclick="setPlanDay('longride',this)"><span id="longLabel">Long Ride</span><small>2+ hrs endurance</small></button>
+  </div>
+
+  <ul class="timeline-list" id="planTimeline"></ul>
+</section>
+
+<!-- FOOD -->
+<section class="tab-panel" id="tab-food">
+  <div class="section-title">Food</div>
+  <p class="section-sub">Pick your moment. Scroll down for reference.</p>
+
+  <div class="moments-grid" id="momentsGrid"></div>
+
+  <div class="divider"></div>
+
+  <div class="section-title" style="font-size:1.1rem;margin-bottom:6px">Protein in Real Food</div>
+  <p class="section-sub" style="margin-bottom:12px">Target 30g per meal. No tracking needed.</p>
+  <div class="protein-grid">
+    <div class="protein-card"><div class="protein-icon">🍗</div><div class="protein-name">Large chicken breast</div><div class="protein-amount">30g protein</div><div class="protein-note">Lean. Fast prep. Versatile.</div></div>
+    <div class="protein-card"><div class="protein-icon">🐟</div><div class="protein-name">Salmon fillet</div><div class="protein-amount">30g protein</div><div class="protein-note">Omega-3s support recovery.</div></div>
+    <div class="protein-card"><div class="protein-icon">🥚</div><div class="protein-name">Three large eggs</div><div class="protein-amount">19g protein</div><div class="protein-note">Pair with yoghurt to reach 30g.</div></div>
+    <div class="protein-card"><div class="protein-icon">🍶</div><div class="protein-name">Greek yoghurt (200g)</div><div class="protein-amount">20g protein</div><div class="protein-note">Full fat. Add berries and seeds.</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="hier-section">
+    <div class="hier-title">Bread -- if you are eating it</div>
+    <ul class="hier-list">
+      <li><div class="hier-rank best">1</div><div><strong>Sourdough</strong><span class="hier-note">Slow fermentation reduces glycaemic impact. Best option.</span></div></li>
+      <li><div class="hier-rank">2</div><div><strong>Wholegrain rye</strong><span class="hier-note">High fibre, slow release.</span></div></li>
+      <li><div class="hier-rank">3</div><div><strong>Seeded wholemeal</strong><span class="hier-note">Better than white. Seeds slow absorption.</span></div></li>
+      <li><div class="hier-rank" style="color:var(--red)">-</div><div><strong>White bread</strong><span class="hier-note">Fast storage signal spike. Avoid where possible.</span></div></li>
+    </ul>
+  </div>
+
+  <div class="hier-section">
+    <div class="hier-title">Cheese -- most are fine</div>
+    <ul class="hier-list">
+      <li><div class="hier-rank best">✓</div><div><strong>Hard cheeses</strong> (parmesan, cheddar, pecorino)<span class="hier-note">High protein, low carb, minimal storage signal impact.</span></div></li>
+      <li><div class="hier-rank best">✓</div><div><strong>Soft cheeses</strong> (brie, camembert, feta)<span class="hier-note">Fine in normal portions. Good with protein meals.</span></div></li>
+      <li><div class="hier-rank best">✓</div><div><strong>Cottage cheese</strong><span class="hier-note">High casein -- slow-release protein. Good before sleep.</span></div></li>
+      <li><div class="hier-rank" style="color:var(--amber)">~</div><div><strong>Processed slices</strong><span class="hier-note">Not harmful. Minimal nutritional value.</span></div></li>
+    </ul>
+  </div>
+
+  <div class="hier-section">
+    <div class="hier-title">Olive oil</div>
+    <ul class="hier-list">
+      <li><div class="hier-rank best">✓</div><div><strong>Extra virgin -- cold use</strong><span class="hier-note">Dressings, drizzling, finishing. Polyphenols intact.</span></div></li>
+      <li><div class="hier-rank best">✓</div><div><strong>Standard olive oil -- cooking</strong><span class="hier-note">Higher smoke point. Use above 180°C. Extra virgin degrades at high heat.</span></div></li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="ai-title">Always Have These In</div>
+  <div class="ai-grid" id="aiGrid"></div>
+
+  <div class="divider"></div>
+
+  <div class="fuel-calc">
+    <div class="fuel-title">Fuelling Calculator</div>
+    <div class="fuel-sub">Sport-specific. Duration-specific.</div>
+    <div class="fuel-row">
+      <div class="fuel-lbl">Sport</div>
+      <select class="fuel-sel" id="fuelSport" onchange="calcFuel()">
+        <option value="cycling">Cycling</option>
+        <option value="running">Running</option>
+        <option value="workout">Workout</option>
+      </select>
+    </div>
+    <div class="fuel-row">
+      <div class="fuel-lbl">Duration</div>
+      <select class="fuel-sel" id="fuelDuration" onchange="calcFuel()">
+        <option value="under1">Under 1 hour</option>
+        <option value="1to2">1-2 hours</option>
+        <option value="2to3">2-3 hours</option>
+        <option value="3to5">3-5 hours</option>
+        <option value="over5">5+ hours</option>
+      </select>
+    </div>
+    <div class="fuel-result" id="fuelResult"></div>
+  </div>
+</section>
+</div>
+
+<div class="tt" id="tooltipBox"></div>
+
+<script>
+const HOURS=37;
+let sport=localStorage.getItem('ep_sport')||'cycling';
+let scenario='unmanaged';
+let dayType='rest';
+let planDay='rest';
+let sim={foodOrder:false,walk:false,protein:false,sleep:false};
+let dark=localStorage.getItem('ep_theme')!=='light';
+
+if(!dark){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeIcon').textContent='☾';}
+document.getElementById('sportSelect').value=sport;
+
+const SL={cycling:{s:'Ride',l:'Long Ride',v:'ride'},running:{s:'Run',l:'Long Run',v:'run'},workout:{s:'Session',l:'Long Session',v:'train'}};
+
+function setSport(v){sport=v;localStorage.setItem('ep_sport',v);updateSL();calcFuel();renderPlan();document.getElementById('fuelSport').value=v;}
+function updateSL(){const l=SL[sport];document.getElementById('trainLabel').textContent=l.s+' Day';document.getElementById('longLabel').textContent=l.l;}
+updateSL();
+
+function toggleTheme(){
+  dark=!dark;
+  if(dark){document.documentElement.removeAttribute('data-theme');document.getElementById('themeIcon').textContent='☀';localStorage.setItem('ep_theme','dark');}
+  else{document.documentElement.setAttribute('data-theme','light');document.getElementById('themeIcon').textContent='☾';localStorage.setItem('ep_theme','light');}
+  drawChart();
+}
+
+function showTab(n,btn){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+n).classList.add('active');
+  btn.classList.add('active');
+  if(n==='simulator')setTimeout(drawChart,60);
+}
+
+// KEYWORDS
+const KW=[
+  {w:'Cortisol Peak',d:'amber',t:'Your morning peak is wasted on cereal',b:'The energy signal reaches its highest natural point within 30-45 minutes of waking. A high-carb breakfast triggers a large storage signal that suppresses fat mobilisation and leaves you crashing before 10am. Protein and fat at this window let the morning peak do its job.'},
+  {w:'8pm Rule',d:'red',t:'Eating past 8pm tells your body to store, not recover',b:'The storage signal pathway becomes markedly less efficient after 8pm. The same meal eaten at 6pm and 10pm produces a measurably different response. Late eating disrupts overnight repair and blunts the morning wake-up peak.'},
+  {w:'Afternoon Slump',d:'red',t:'The slump is signal collision, not tiredness',b:'The energy signal naturally declines through the afternoon. Layer a high-carb lunch on top and you create a storage signal spike directly into the trough. The result is the 2-3pm wall. Protein-first lunch with fibre keeps the afternoon functional.'},
+  {w:'Take a Walk',d:'green',t:'Walking after eating is signal management, not exercise',b:'Skeletal muscle contraction activates glucose transporters independently of the storage signal. A 10-minute walk starting as soon as you finish eating can reduce the storage signal peak by 30-40%. Start the moment you finish -- not after clearing plates.'},
+  {w:'The Order Counts',d:'green',t:'Vegetables and protein first cuts the storage signal spike by 40%+',b:'Fibre and protein consumed before carbohydrates slow gastric emptying and blunt glucose absorption. Same food, different order, different signal. One of the highest-return changes you can make with zero additional effort or cost.'},
+  {w:'Fat Burning Window',d:'green',t:'Your body cannot burn fat if the storage signal never falls',b:'Fat oxidation requires the storage signal to return to baseline. Frequent snacking or meals too close together keeps it elevated continuously. A 14-16 hour overnight fast on rest days creates the window your body needs to access stored fat.'},
+  {w:'Training Fuel',d:'amber',t:'Training without fuelling elevates the energy signal for hours afterwards',b:'Fasted intense training sends a stress signal that can remain elevated for 3-4 hours post-session. On back-to-back training days, cumulative elevation impairs sleep, slows muscle repair, and creates the paradox of training harder but recovering worse.'},
+  {w:'One Bad Night',d:'red',t:'One bad night resets your metabolic state',b:'Sleep deprivation under six hours impairs glucose clearance to the level seen in early insulin resistance within 24 hours. The storage signal becomes less effective, fat oxidation deteriorates. Sleep is the training adaptation window -- treating it as optional is why most protocols fail.'}
+];
+
+function renderKW(){
+  document.getElementById('kwGrid').innerHTML=KW.map((k,i)=>`
+    <div class="kw-item" id="kw${i}" onclick="toggleKW(event,${i})">
+      <span class="kw-word"><span class="kw-dot ${k.d}"></span>${k.w}</span>
+      <div class="kw-panel"><div class="kw-panel-title">${k.t}</div><div class="kw-panel-body">${k.b}</div></div>
+    </div>`).join('');
+}
+renderKW();
+function toggleKW(e,i){e.stopPropagation();const el=document.getElementById('kw'+i),was=el.classList.contains('open');document.querySelectorAll('.kw-item').forEach(x=>x.classList.remove('open'));if(!was)el.classList.add('open');}
+document.addEventListener('click',()=>document.querySelectorAll('.kw-item').forEach(x=>x.classList.remove('open')));
+
+// CHART DATA
+const SCEN={
+  unmanaged:{c:[55,50,52,58,65,68,60,50,40,30,28,38,60,65,50,42,35,38,42,40,38,40,45,48,50,48,44,40,38,36,30,28,38,55,60,55,50],i:[55,75,60,48,35,28,25,20,18,15,18,20,22,55,75,55,40,30,60,75,55,45,40,55,70,60,50,45,40,35,30,25,20,18,20,25,30]},
+  realistic:{c:[50,45,40,38,36,42,55,65,70,60,50,42,38,65,72,65,55,45,40,38,36,40,44,50,52,50,45,42,38,35,30,28,32,52,60,58,52],i:[40,60,45,30,22,18,15,12,10,10,12,14,16,45,58,48,35,25,50,65,48,35,30,45,55,45,38,32,28,25,20,18,15,14,18,22,28]},
+  managed:{c:[45,38,32,30,30,38,58,72,80,75,65,55,48,72,80,75,65,55,45,40,38,40,45,50,52,48,42,38,35,32,28,26,30,55,65,60,55],i:[30,50,35,20,15,12,10,8,8,10,12,14,16,35,42,35,28,20,35,45,32,24,22,35,42,35,28,24,20,18,15,12,10,10,14,18,24]},
+  ideal:{c:[40,32,28,26,26,35,62,80,90,85,75,62,52,78,88,82,70,58,48,42,38,40,46,52,55,50,44,38,34,30,26,24,28,58,70,65,58],i:[20,35,22,15,10,8,8,6,6,8,10,12,14,25,30,24,18,14,22,28,20,16,14,22,28,22,18,14,12,10,8,6,6,8,12,16,20]}
+};
+const OC={
+  unmanaged:{e:{v:'3-4 hrs',c:'red'},f:{v:'~4 hrs',c:'red'},cr:{v:'Very likely',c:'red'},sl:{v:'Disrupted',c:'red'}},
+  realistic:{e:{v:'5-6 hrs',c:'amber'},f:{v:'~8 hrs',c:'amber'},cr:{v:'Possible',c:'amber'},sl:{v:'Variable',c:'amber'}},
+  managed:{e:{v:'8-10 hrs',c:'green'},f:{v:'~12 hrs',c:'green'},cr:{v:'Unlikely',c:'green'},sl:{v:'Solid',c:'green'}},
+  ideal:{e:{v:'10-12 hrs',c:'green'},f:{v:'14+ hrs',c:'green'},cr:{v:'Rare',c:'green'},sl:{v:'Restorative',c:'green'}}
+};
+const FEEL={
+  unmanaged:[{l:'Low',s:0,e:5,c:'amber'},{l:'Crash',s:5,e:9,c:'red'},{l:'Waking',s:9,e:13,c:'amber'},{l:'Slump',s:13,e:17,c:'red'},{l:'Average',s:17,e:22,c:'amber'},{l:'Poor',s:22,e:28,c:'amber'},{l:'Disrupted',s:28,e:36,c:'red'}],
+  realistic:[{l:'OK',s:0,e:5,c:'amber'},{l:'Waking',s:5,e:9,c:'green'},{l:'Good',s:9,e:13,c:'green'},{l:'Dip',s:13,e:17,c:'amber'},{l:'Steady',s:17,e:22,c:'amber'},{l:'Tired',s:22,e:28,c:'amber'},{l:'Rest',s:28,e:36,c:'green'}],
+  managed:[{l:'Settling',s:0,e:5,c:'amber'},{l:'Strong',s:5,e:9,c:'green'},{l:'Peak',s:9,e:14,c:'green'},{l:'Solid',s:14,e:20,c:'green'},{l:'Good',s:20,e:26,c:'green'},{l:'Easing',s:26,e:30,c:'amber'},{l:'Recovery',s:30,e:36,c:'green'}],
+  ideal:[{l:'Deep rest',s:0,e:5,c:'green'},{l:'Strong',s:5,e:9,c:'green'},{l:'Peak',s:9,e:15,c:'green'},{l:'Sustained',s:15,e:22,c:'green'},{l:'Easing',s:22,e:27,c:'green'},{l:'Restoring',s:27,e:32,c:'amber'},{l:'Deep rest',s:32,e:36,c:'green'}]
+};
+
+function zoneText(v,sig){
+  if(sig==='c'){if(v>=70)return['green','High -- good energy'];if(v>=42)return['amber','Moderate'];return['red','Low -- fatigue likely'];}
+  else{if(v<=25)return['green','Low -- fat burning'];if(v<=55)return['amber','Moderate'];return['red','High -- storage mode'];}
+}
+function simC(){const b=[...SCEN[scenario].c];if(sim.sleep)for(let i=0;i<9;i++)b[i]=Math.min(100,b[i]*.82+10);if(sim.protein)for(let i=12;i<18;i++)b[i]=Math.min(100,b[i]*1.09);return b;}
+function simI(){const b=[...SCEN[scenario].i];const fm=sim.foodOrder?.58:1,wm=sim.walk?.72:1;for(let i=0;i<b.length;i++)if(b[i]>30)b[i]=30+(b[i]-30)*fm*wm;if(sim.sleep)for(let i=5;i<13;i++)b[i]=Math.max(5,b[i]*.8);return b;}
+
+function renderOC(){
+  const d=OC[scenario];
+  document.getElementById('outcomeCard').innerHTML=`
+    <div class="oc-item"><div class="oc-label">Useful energy window</div><div class="oc-value ${d.e.c}">${d.e.v}</div></div>
+    <div class="oc-item"><div class="oc-label">Fat burning window</div><div class="oc-value ${d.f.c}">${d.f.v}</div></div>
+    <div class="oc-item"><div class="oc-label">Afternoon crash</div><div class="oc-value ${d.cr.c}">${d.cr.v}</div></div>
+    <div class="oc-item"><div class="oc-label">Sleep quality</div><div class="oc-value ${d.sl.c}">${d.sl.v}</div></div>`;
+}
+renderOC();
+
+function drawChart(){
+  const cv=document.getElementById('mainChart');if(!cv)return;
+  const W=cv.offsetWidth||580,H=200;
+  cv.width=W*devicePixelRatio;cv.height=H*devicePixelRatio;
+  cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(devicePixelRatio,devicePixelRatio);
+  const dk=!document.documentElement.hasAttribute('data-theme');
+  const cC=dk?'#f5a623':'#c17d0a',iC=dk?'#5b9cf6':'#2d6ee0';
+  const pL=32,pR=8,pT=10,pB=4,cW=W-pL-pR,cH=H-pT-pB;
+  ctx.clearRect(0,0,W,H);
+
+  // Background bands
+  [{y1:0,y2:35,col:dk?'rgba(232,72,72,.07)':'rgba(196,43,43,.06)'},{y1:35,y2:65,col:dk?'rgba(245,166,35,.05)':'rgba(193,125,10,.04)'},{y1:65,y2:100,col:dk?'rgba(56,201,122,.06)':'rgba(31,168,92,.05)'}].forEach(b=>{
+    const ya=pT+cH-(b.y2/100)*cH,yb=pT+cH-(b.y1/100)*cH;
+    ctx.fillStyle=b.col;ctx.fillRect(pL,ya,cW,yb-ya);
+  });
+
+  // Y axis labels
+  ctx.font=`9px DM Sans`;ctx.textAlign='right';ctx.fillStyle=dk?'rgba(255,255,255,.3)':'rgba(0,0,0,.3)';
+  ctx.fillText('High',pL-4,pT+10);ctx.fillText('Mid',pL-4,pT+cH/2+4);ctx.fillText('Low',pL-4,pT+cH-2);
+
+  // Grid
+  ctx.strokeStyle=dk?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';ctx.lineWidth=1;
+  [25,50,75].forEach(v=>{const y=pT+cH-(v/100)*cH;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(pL+cW,y);ctx.stroke();});
+
+  // Sleep band idx 4-12 (22:00-06:00)
+  const sx=pL+(4/36)*cW,sw=(8/36)*cW;
+  ctx.fillStyle=dk?'rgba(91,156,246,.07)':'rgba(45,110,224,.05)';
+  ctx.fillRect(sx,pT,sw,cH);
+  ctx.font='11px serif';ctx.textAlign='center';ctx.fillStyle=dk?'rgba(255,255,255,.2)':'rgba(0,0,0,.2)';
+  ctx.fillText('🌙',sx+sw/2,pT+16);
+  ctx.fillText('☀',pL+(12/36)*cW+12,pT+16);
+
+  // Vertical markers
+  ctx.strokeStyle=dk?'rgba(255,255,255,.1)':'rgba(0,0,0,.09)';ctx.setLineDash([3,4]);
+  [6,18,30].forEach(idx=>{const x=pL+(idx/36)*cW;ctx.beginPath();ctx.moveTo(x,pT);ctx.lineTo(x,pT+cH);ctx.stroke();});
+  ctx.setLineDash([]);
+
+  // Fasting band rest days
+  if(dayType==='rest'){
+    const fs=pL+(2/36)*cW,fe=pL+(18/36)*cW;
+    ctx.fillStyle=dk?'rgba(91,156,246,.08)':'rgba(45,110,224,.06)';
+    ctx.fillRect(fs,pT,fe-fs,cH);
+    ctx.font='9px DM Sans';ctx.textAlign='center';ctx.fillStyle=dk?'rgba(91,156,246,.5)':'rgba(45,110,224,.5)';
+    ctx.fillText('FASTING',(fs+fe)/2,pT+cH-5);
+  }
+
+  const cd=simC(),id=simI();
+  function line(data,col,fa){
+    ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.lineCap='round';
+    for(let i=0;i<data.length;i++){const x=pL+(i/36)*cW,y=pT+cH-(data[i]/100)*cH;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.stroke();
+    ctx.beginPath();
+    for(let i=0;i<data.length;i++){const x=pL+(i/36)*cW,y=pT+cH-(data[i]/100)*cH;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+    ctx.lineTo(pL+cW,pT+cH);ctx.lineTo(pL,pT+cH);ctx.closePath();ctx.fillStyle=fa;ctx.fill();
+  }
+  line(id,iC,dk?'rgba(91,156,246,.12)':'rgba(45,110,224,.08)');
+  line(cd,cC,dk?'rgba(245,166,35,.12)':'rgba(193,125,10,.08)');
+
+  // Feel strip
+  const strip=document.getElementById('feelStrip'),zones=FEEL[scenario];
+  strip.innerHTML='';strip.style.left=pL+'px';strip.style.right=(W-pL-cW)+'px';
+  zones.forEach(z=>{
+    const seg=document.createElement('div');seg.className='feel-seg '+z.c;
+    seg.style.left=(z.s/36*100)+'%';seg.style.width=((z.e-z.s)/36*100)+'%';
+    seg.textContent=z.l;strip.appendChild(seg);
+  });
+
+  // Time axis
+  const ax=document.getElementById('timeAxis');ax.innerHTML='';
+  [[0,'6pm'],[6,'Midnight'],[12,'6am'],[18,'Noon'],[24,'6pm'],[30,'Midnight'],[36,'6am']].forEach(([idx,lbl])=>{
+    const sp=document.createElement('span');sp.className='time-label';sp.textContent=lbl;sp.style.left=(pL+(idx/36)*cW)+'px';ax.appendChild(sp);
+  });
+
+  // Tooltip
+  cv.onmousemove=e=>tip(e,pL,cW,cH,pT,cd,id);
+  cv.onmouseleave=()=>{document.getElementById('tooltipBox').style.display='none';};
+  cv.ontouchmove=e=>{e.preventDefault();tip(e.touches[0],pL,cW,cH,pT,cd,id,cv.getBoundingClientRect());};
+  cv.ontouchend=()=>{document.getElementById('tooltipBox').style.display='none';};
+}
+
+function tip(e,pL,cW,cH,pT,cd,id,ro){
+  const cv=document.getElementById('mainChart'),rect=ro||cv.getBoundingClientRect();
+  const frac=(e.clientX-rect.left-pL)/cW;if(frac<0||frac>1){document.getElementById('tooltipBox').style.display='none';return;}
+  const idx=Math.round(frac*36),h=(18+idx)%24,h12=h===0?12:(h>12?h-12:h),ap=h>=12?'pm':'am';
+  const dn=idx<=6?' (prev eve)':idx<=12?' (overnight)':idx<=18?' (today)':' (this eve)';
+  const [cc,ct]=zoneText(Math.round(cd[idx]),'c'),[ic,it]=zoneText(Math.round(id[idx]),'i');
+  const tt=document.getElementById('tooltipBox');
+  tt.innerHTML=`<div class="tt-time">${h12}:00${ap}${dn}</div><div class="tt-row"><span class="tt-lbl">Energy signal</span><span class="tt-zone ${cc}">${ct}</span></div><div class="tt-row"><span class="tt-lbl">Storage signal</span><span class="tt-zone ${ic}">${it}</span></div>`;
+  const ttW=220,lx=rect.left+(pL+(idx/36)*cW)-ttW/2;
+  tt.style.left=Math.max(rect.left+4,Math.min(lx,rect.right-ttW-4))+'px';
+  tt.style.top=(rect.top-95)+'px';tt.style.display='block';
+}
+
+function setScenario(n,btn){scenario=n;document.querySelectorAll('.scenario-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderOC();drawChart();}
+function toggleSim(k){sim[k]=!sim[k];document.getElementById('chip-'+k).classList.toggle('on',sim[k]);drawChart();}
+function setDayType(v){dayType=v;updateFN();drawChart();}
+function updateFN(){
+  const l=SL[sport];
+  document.getElementById('fastingNote').innerHTML=dayType==='rest'?
+    '<strong>Rest day:</strong> 16:8 fast. Last meal 8pm. First meal noon next day. Fast ends before any training session.':
+    `<strong>Training day:</strong> No fast. Carbs before your ${l.v}. Recovery meal within 30 min of finishing.`;
+}
+updateFN();
+
+// EATING WINDOW SLIDER
+const PD={
+  rest:[
+    {t:'6am',d:'accent',ti:'Fasting -- no food yet',s:'Fast continues from 8pm last night. Black coffee or tea is fine.',f:[]},
+    {t:'8-9am',d:'amber',ti:'Optional: movement before breaking fast',s:'Walk, easy ride, mobility. Extends fat oxidation window.',f:['30-min walk or easy ride','Nothing with calories']},
+    {t:'Noon',d:'green',ti:'Break the fast -- protein and fat first',s:'First meal after 16 hours. Eat vegetables and protein before any carbs.',f:['3 eggs + smoked salmon (49g protein)','Greek yoghurt + berries + seeds (20g protein)','Chicken breast + avocado + leaves','Add sourdough only last, if at all']},
+    {t:'12:10',d:'green',ti:'Walk immediately -- 10 minutes minimum',s:'Start as soon as you finish. Not after clearing the plates.',f:['Around the block is enough','Low intensity -- the mechanism is mechanical, not metabolic']},
+    {t:'3pm',d:'amber',ti:'If hungry: protein snack only',s:'Avoid a storage signal spike in the afternoon trough.',f:['Greek yoghurt, plain','Handful of mixed nuts','Boiled eggs','If eating fruit, pair it with protein -- not fruit alone']},
+    {t:'6-7pm',d:'green',ti:'Main meal -- largest of the day',s:'Vegetables first, protein second, carbs last.',f:['Salad or roasted veg (eat first)','Salmon fillet or large chicken breast (30g protein)','Brown rice or sweet potato in small portion (eat last)','Dress with olive oil']},
+    {t:'7pm',d:'green',ti:'Walk after dinner -- 10 minutes',s:'Starts the moment you finish.',f:[]},
+    {t:'8pm',d:'red',ti:'Kitchen closed',s:'Fast begins. Next meal: noon tomorrow.',f:['Herbal tea fine','Water fine']}
+  ],
+  training:[
+    {t:'6am',d:'accent',ti:'Pre-session: small carb hit',s:'Carbs 30-60 min before. Enough to fuel, not so much it slows you.',f:['Banana','Oat bar or 2 rice cakes with honey','Small bowl of oats with a little protein']},
+    {t:'7am',d:'green',ti:'Session',s:'See fuelling calculator in Food tab for sessions over 90 min.',f:['Water','Electrolytes for sessions 60+ min','Carbs from 90 min onwards']},
+    {t:'8:30am',d:'green',ti:'Recovery meal -- within 30 minutes of finishing',s:'The 30-minute window is real. Do not skip it.',f:['3 eggs + 2 slices sourdough','Shake + banana if appetite suppressed','Greek yoghurt + berries + granola','Chicken breast + rice bowl']},
+    {t:'12-1pm',d:'green',ti:'Lunch -- protein-first',s:'No fast on training days.',f:['Salmon + roasted veg + small portion carbs','Chicken salad with quinoa','Eggs any style with veg']},
+    {t:'1pm',d:'green',ti:'Walk immediately after lunch',s:'10 minutes. Same mechanism applies.',f:[]},
+    {t:'6-7pm',d:'green',ti:'Dinner -- vegetables and protein',s:'Lighter on carbs if morning session was today.',f:['Salmon or chicken + large salad','Stir-fry with tofu or prawns','Vegetable soup + protein']},
+    {t:'8pm',d:'red',ti:'Kitchen closed',s:'',f:['Herbal tea fine','Water fine']}
+  ],
+  longride:[
+    {t:'5:30am',d:'amber',ti:'Pre-session breakfast -- 90 min before start',s:'Carbs + protein. Enough time to partially digest.',f:['Porridge with banana and honey','Eggs on sourdough toast','Avoid: heavy fat, too much fibre']},
+    {t:'7am',d:'green',ti:'On the bike -- fuelling starts at 45 min',s:'Do not wait until hungry. By then you are already behind.',f:['60-90g carbs per hour (2+ hr ride)','Gels, bars, banana, dates','Real food preferred: rice cakes, figs, malt loaf','Electrolytes throughout']},
+    {t:'Finish',d:'accent',ti:'Recovery starts the moment you stop',s:'Within 30 minutes. Carbs + protein together.',f:['Chocolate milk (effective)','Rice + chicken or eggs','Recovery shake if appetite suppressed','20g+ protein + 40-60g carbs minimum']},
+    {t:'+2hrs',d:'green',ti:'Full recovery meal',s:'Larger protein hit. Drives overnight repair.',f:['Salmon + large portion sweet potato + veg','Chicken thighs + rice + salad','One of the few times pasta earns its place']},
+    {t:'Evening',d:'green',ti:'Second protein dose if dinner was light',s:'Muscle repair peaks again 5 hrs after first dose.',f:['Greek yoghurt + mixed nuts','Cottage cheese (slow-release overnight)','Boiled eggs']},
+    {t:'8:30pm',d:'red',ti:'Kitchen closed (30 min later on long days)',s:'Post-long-session the body tolerates slightly later. Not a habit.',f:['Herbal tea fine','Water fine']}
+  ]
+};
+
+(function(){
+  const rs=document.getElementById('rangeStart'),re=document.getElementById('rangeEnd');
+  const fill=document.getElementById('rFill'),opt=document.getElementById('rOpt');
+  const MIN=6,MAX=23,span=MAX-MIN;
+  opt.style.left=((11-MIN)/span*100)+'%';opt.style.width=(9/span*100)+'%';
+  function upd(){
+    let s=+rs.value,e=+re.value;if(s>=e-1){s=e-2;rs.value=s;}
+    fill.style.left=((s-MIN)/span*100)+'%';fill.style.width=((e-s)/span*100)+'%';
+    const f=v=>{const h=v%12||12,ap=v>=12?'pm':'am';return h+':00'+ap;};
+    document.getElementById('windowEndpoints').textContent=f(s)+' -- '+f(e);
+    document.getElementById('windowFast').textContent=(24-(e-s))+'-hr fast';
+    document.getElementById('windowWarn').style.display=e>20?'block':'none';
+    renderPlan();
+  }
+  rs.addEventListener('input',upd);re.addEventListener('input',upd);upd();
+})();
+
+// MY PLAN
+function setPlanDay(type,btn){planDay=type;document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderPlan();}
+function renderPlan(){
+  const data=PD[planDay]||PD.rest,l=SL[sport];
+  document.getElementById('planTimeline').innerHTML=data.map((it,i)=>`
+    <li class="tl-item">
+      <div class="tl-left"><div class="tl-time">${it.t}</div><div class="tl-line"></div></div>
+      <div class="tl-dot ${it.d}"></div>
+      <div class="tl-right"><div class="tl-card" id="tlc${i}" onclick="tlToggle(${i},${it.f.length>0})">
+        <div class="tl-card-head">
+          <div><div class="tl-card-title">${it.ti.replace(/Session/g,l.s).replace(/[Rr]ide/g,l.v)}</div><div class="tl-card-sub">${it.s.replace(/session/gi,l.s.toLowerCase())}</div></div>
+          ${it.f.length?'<div class="tl-icon">&#9660;</div>':''}
+        </div>
+        ${it.f.length?`<div class="tl-foods"><div class="tl-foods-lbl">Food ideas right now</div><ul class="tl-foods-list">${it.f.map(f=>'<li>'+f+'</li>').join('')}</ul></div>`:''}
+      </div></div>
+    </li>`).join('');
+}
+renderPlan();
+function tlToggle(i,has){if(!has)return;const c=document.getElementById('tlc'+i);c.classList.toggle('open');const ic=c.querySelector('.tl-icon');if(ic)ic.style.transform=c.classList.contains('open')?'rotate(180deg)':'';}
+
+// FOOD MOMENTS
+const MOM=[
+  {icon:'🌅',name:'Quick breakfast',tag:'Under 10 minutes',items:[
+    {t:'3 eggs scrambled + handful spinach',n:'19g protein. Add cottage cheese to hit 30g.'},
+    {t:'Greek yoghurt + berries + mixed seeds',n:'20g protein. Full fat. No added sugar.'},
+    {t:'Overnight oats + protein powder + banana',n:'Pre-made. Carbs earned on a training day.'},
+    {t:'Smoked salmon on sourdough + cream cheese',n:'Protein-first. Fat slows absorption.'}
+  ]},
+  {icon:'🏢',name:'Desk lunch',tag:'At your desk or on the go',items:[
+    {t:'Supermarket: protein pot + salad tub + boiled eggs',n:'Build your own. Eggs from the snack aisle add 19g protein instantly.'},
+    {t:'Café: chicken or tuna on sourdough or rye',n:'Ask for salad on the side. Eat the salad first.'},
+    {t:'Sandwich bar: swap the meal deal',n:'Swap crisps for nuts. Swap white roll for wholegrain. Add a boiled egg if available.'},
+    {t:'Canteen: protein first from the hot counter',n:'Meat or fish + veg. Small portion of carbs last on the plate.'}
+  ]},
+  {icon:'🛒',name:'Supermarket run',tag:'Walk in knowing what to get',items:[
+    {t:'Protein anchor: pre-cooked chicken, tinned salmon, boiled eggs',n:'These keep. Always have one on hand.'},
+    {t:'Veg first: pre-washed salad bags, cherry tomatoes, cucumber',n:'No prep required. Eat before anything else.'},
+    {t:'Carbs if needed: wholegrain rice, sweet potato, sourdough',n:'Put them last on the plate.'},
+    {t:'Snack insurance: mixed nuts, full-fat yoghurt, dark chocolate 85%+',n:'Storage-signal neutral. Stops panic buying at 3pm.'}
+  ]},
+  {icon:'🚴',name:'Post-session',tag:'Within 30 min of finishing',items:[
+    {t:'Recovery shake + banana',n:'Fast if appetite suppressed. Carbs and protein together.'},
+    {t:'3 eggs on sourdough toast',n:'Solid option. Prep ahead if possible.'},
+    {t:'Greek yoghurt + granola + honey',n:'Quick. Hits both macros.'},
+    {t:'Chocolate milk',n:'Unfashionable but effective. Carbs, casein, and fluid in one.'}
+  ]},
+  {icon:'😩',name:'Need a snack',tag:'Hunger or just a signal dip?',items:[
+    {t:'Wait 15 min and drink water first',n:'3pm tiredness is usually a storage signal dip, not hunger.'},
+    {t:'If still hungry: Greek yoghurt or boiled eggs',n:'Protein without a storage signal spike.'},
+    {t:'Mixed nuts (small handful)',n:'Fat and protein. Fills the gap without spiking.'},
+    {t:'Apple + nut butter',n:'If eating fruit, pair it. Never fruit alone.'},
+    {t:'Avoid: biscuits, crisps, cereal bars',n:'Spike, crash, repeat.'}
+  ]},
+  {icon:'🌙',name:"Can't cook tonight",tag:'Takeaway done right',items:[
+    {t:'Japanese / sushi: sashimi + miso + edamame',n:'High protein. Low storage signal spike. Best takeaway option.'},
+    {t:'Indian: tandoori or grilled protein + lentil dal + raita',n:'Avoid naan and large portions of white rice. Eat the sauce, not the bread.'},
+    {t:'Pizza: large salad first, two slices maximum',n:'Protein topping over extra cheese. Eat the salad before the pizza arrives.'},
+    {t:'Ready meal: look for 20g+ protein per portion',n:"Supermarket protein ranges are legitimate. Avoid pasta pots."}
+  ]}
+];
+
+document.getElementById('momentsGrid').innerHTML=MOM.map((m,i)=>`
+  <div class="moment-card" id="mc${i}" onclick="togMoment(${i})">
+    <div class="moment-icon">${m.icon}</div>
+    <div class="moment-name">${m.name}</div>
+    <div class="moment-tagline">${m.tag}</div>
+    <div class="moment-detail"><ul class="moment-items">${m.items.map(it=>`<li><strong>${it.t}</strong><span class="moment-note">${it.n}</span></li>`).join('')}</ul></div>
+  </div>`).join('');
+
+function togMoment(i){const c=document.getElementById('mc'+i),was=c.classList.contains('open');document.querySelectorAll('.moment-card').forEach(x=>x.classList.remove('open'));if(!was)c.classList.add('open');}
+
+// ALWAYS IN
+const AI=[
+  {i:'🥚',n:'Eggs',w:'Fast protein any time'},{i:'🍶',n:'Greek yoghurt',w:'High protein, versatile'},
+  {i:'🐟',n:'Tinned salmon',w:'Instant 20g protein'},{i:'🥑',n:'Avocado',w:'Fat and fibre'},
+  {i:'🫐',n:'Frozen berries',w:'No storage spike'},{i:'🥬',n:'Leafy greens',w:'Eat first'},
+  {i:'🌰',n:'Mixed nuts',w:'Snack without spiking'},{i:'🍠',n:'Sweet potato',w:'Best post-session carb'},
+  {i:'🫒',n:'Extra virgin olive oil',w:'Cold use. Slows absorption'},{i:'🧀',n:'Cottage cheese',w:'Casein for overnight'},
+  {i:'🌾',n:'Oats',w:'Pre-session carbs'},{i:'🍫',n:'Dark choc 85%+',w:'Minimal storage signal'}
+];
+document.getElementById('aiGrid').innerHTML=AI.map(a=>`<div class="ai-card"><div class="ai-icon">${a.i}</div><div class="ai-name">${a.n}</div><div class="ai-why">${a.w}</div></div>`).join('');
+
+// FUELLING
+const FP={
+  cycling:{
+    under1:{b:'Small banana or nothing. You do not need to fuel a ride under 60 min on normal meals.',d:'Water only. Electrolytes if hot.',a:'Normal meal within 90 min.'},
+    '1to2':{b:'Banana or small oat bar 45 min before. 30-40g carbs.',d:'One gel or bar at 45 min. Water consistently.',a:'Recovery within 30 min: eggs on toast or shake + banana.'},
+    '2to3':{b:'Full pre-ride meal 90 min out: oats + eggs or toast + nut butter.',d:'60g carbs per hour from 45 min in. Gels, bars, or real food. Electrolytes.',a:'Recovery within 30 min: 20g+ protein + 40-60g carbs. Full meal within 2 hrs.'},
+    '3to5':{b:'Full breakfast 90-120 min before. Oats, eggs, toast. 60-80g carbs + protein.',d:'60-90g carbs per hour. Mix sources: gels + real food (rice cakes, fig rolls, malt loaf). Electrolytes. Caffeine gel at 90 min.',a:'Immediate: shake + banana or chocolate milk. Full meal within 60 min.'},
+    over5:{b:'Two meals the day before. Pre-ride breakfast 2 hrs out. 80-100g carbs + protein.',d:'90g carbs per hour. Multiple carb types (glucose + fructose). 500-1000mg sodium per hour. Real food in later hours.',a:'Recovery shake immediately. Full meal within 30 min. Second protein dose 4-5 hrs later.',at:"At this duration you are an endurance athlete. Gut training matters -- your gut's capacity to absorb carbs is trainable. Build from 60g/hr over weeks if 90g causes distress."}
+  },
+  running:{
+    under1:{b:'Nothing, or a small banana 45 min out if needed.',d:'Water only under 45 min. Electrolytes for 45-60 min in heat.',a:'Normal meal within 90 min.'},
+    '1to2':{b:'Banana or small bar 45 min before. Keep it light.',d:'Gel at 45 and 75 min. Water every 20 min. Running limits gut absorption -- gels over solid food.',a:'Recovery within 30 min: shake + banana or eggs + toast.'},
+    '2to3':{b:'Light meal 90 min out: toast with honey + small protein. Avoid fibre and fat.',d:'45g carbs per hour. Gels preferred for running. Electrolytes.',a:'Recovery meal within 30 min. Anti-inflammatory focus: salmon, colourful veg.'},
+    '3to5':{b:'Carb-load the evening before. Light breakfast 2 hrs before.',d:'45-60g carbs per hour. Gels + sports drink. Nothing new on race day.',a:'Immediate recovery shake. Full meal within 60 min. Collagen + vitamin C within 2 hrs.'},
+    over5:{b:'Two-day carb loading. Race morning: 2g carbs per kg bodyweight 3 hrs before.',d:'60g carbs per hour. Real food essential at this duration: rice balls, boiled potatoes with salt, bananas. Sodium critical.',a:'Full recovery protocol for 48-72 hrs. Sleep prioritised above all else.',at:'You are running an ultra or marathon. Gut training is non-negotiable. Practice race nutrition on every long training run.'}
+  },
+  workout:{
+    under1:{b:'Small protein + carb snack 60 min out, or nothing if your last meal was within 2 hrs.',d:'Water. Nothing else needed under 60 min.',a:'Protein within 30 min: shake, Greek yoghurt, or eggs. 20g minimum.'},
+    '1to2':{b:'Moderate meal 90 min out: eggs + toast or oats + protein.',d:'Water. Electrolytes if sweating heavily.',a:'Recovery meal within 30 min: 30g protein + carbs.'},
+    '2to3':{b:'Full meal 2 hrs out. Protein + complex carbs.',d:'Water consistently. Optional intra-workout carb drink for sessions over 90 min.',a:'Recovery within 30 min. Full meal within 2 hrs with 30g+ protein.'},
+    '3to5':{b:'Two carb-focused meals in the preceding day. Pre-session meal 90 min out.',d:'Carb drinks or gels every 45-60 min. Electrolytes.',a:'Protein shake immediately. Full meal within 60 min.'},
+    over5:{b:'Competition or event territory. Structured nutrition plan required.',d:'Carbs throughout. Real food where possible. Sodium replacement critical.',a:'Full recovery protocol. 48-72 hr recovery window.',at:'A 5+ hour session is a competition. Standard gym fuelling does not apply.'}
+  }
+};
+
+function calcFuel(){
+  const s=document.getElementById('fuelSport').value,d=document.getElementById('fuelDuration').value;
+  const p=FP[s]&&FP[s][d]?FP[s][d]:null;
+  const res=document.getElementById('fuelResult');if(!p){res.innerHTML='';return;}
+  const n={cycling:'Ride',running:'Run',workout:'Session'}[s]||'Session';
+  res.innerHTML=`<div class="fuel-rtitle">${n} fuelling plan</div>
+    <div class="fuel-item"><div class="fuel-phase before">Before</div><div class="fuel-text">${p.b}</div></div>
+    <div class="fuel-item"><div class="fuel-phase during">During</div><div class="fuel-text">${p.d}</div></div>
+    <div class="fuel-item"><div class="fuel-phase after">After</div><div class="fuel-text">${p.a}</div></div>
+    ${p.at?`<div class="fuel-athlete">&#9432; ${p.at}</div>`:''}`;
+}
+calcFuel();
+
+// INIT
+window.addEventListener('load',()=>{drawChart();document.getElementById('fuelSport').value=sport;calcFuel();});
+window.addEventListener('resize',drawChart);
+new MutationObserver(()=>{if(document.getElementById('tab-simulator').classList.contains('active'))drawChart();}).observe(document.getElementById('tab-simulator'),{attributes:true,attributeFilter:['class']});
+</script>
+</body>
+</html>

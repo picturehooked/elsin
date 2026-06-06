@@ -25,7 +25,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 20px 11px;background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:100}
 .wm{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.14em;color:var(--tx)}
 .hdate{font-size:.7rem;color:var(--tx3);letter-spacing:.04em}
-.scr{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px;flex:1}
+.scr{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:62px;flex:1}
 .scr.on{display:block}
 
 /* ── SETUP STRIP ── */
@@ -164,7 +164,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .eat-picks li .pick-dot.rd{background:var(--rd)}
 
 /* ── NAV ── */
-.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:64px;background:var(--bg2);border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-around;z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:56px;background:var(--bg2);border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-around;z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
 @media(min-width:430px){.bnav{border-left:1px solid var(--br);border-right:1px solid var(--br)}}
 .nb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 22px;border:none;background:transparent;cursor:pointer}
 .nb-icon{font-size:1.1rem;opacity:.35;transition:opacity .2s}
@@ -192,14 +192,14 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
         <button class="chip cg" id="chip-sl" onclick="cycleSleep()">😴 Good</button>
         <button class="chip cg" id="chip-feel" onclick="cycleFeel()">⚡ Good</button>
         <button class="chip" id="chip-ex" onclick="cycleExercise()">Off</button>
-        <button class="chip" id="chip-fast" onclick="toggleFasting()">IF</button>
+        <button class="chip" id="chip-fast" onclick="toggleFasting()">Fasting</button>
         <button class="chip cc" id="chip-ctx" onclick="cycleContext()">Work</button>
         <button class="chip" id="chip-ton" onclick="cycleTonightChip()">Normal</button>
         <button class="chip" id="chip-stress" onclick="cycleStressChip()">Stress</button>
       </div>
     </div>
     <div class="setup-extime" id="exTimeRow">
-      <span class="tin-lbl">At</span>
+      <span class="tin-lbl">Exercise at</span>
       <input class="tin" type="time" id="t-ex" value="08:00" oninput="onInputChange()">
     </div>
   </div>
@@ -218,7 +218,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 
   <div class="learn-intro">
     <div class="learn-intro-title">Your natural energy wave</div>
-    <div class="learn-intro-body"><strong>Your energy follows a predictable pattern every day — regardless of what you eat.</strong> Understanding the shape changes how you respond to it. The four habits below move the needle most — and the graphs show exactly what they do.</div>
+    <div class="learn-intro-body"><strong>Your energy follows a predictable pattern every day — regardless of what you eat.</strong> Understanding the shape changes how you respond to it.<br><br>Elsin takes a <strong>36-hour view</strong>. Your arc doesn't reset at midnight — what you eat tonight, when you sleep, and how you wind down feeds directly into tomorrow's starting position. Most tools think about today. This one plans across two days at once.<br><br>The five habits below are where the arc is actually won or lost.</div>
   </div>
 
   <!-- Natural wave -->
@@ -226,7 +226,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
     <div class="learn-sec-title">The wave you always have</div>
     <div class="arc-edu-wrap">
       <div class="arc-edu-svg-pad">
-        <svg id="baseArcSVG" viewBox="0 0 330 78" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        <svg id="baseArcSVG" viewBox="0 0 330 90" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
       </div>
       <div class="arc-edu-note"><strong>The slow zone in the early afternoon is built into human biology.</strong> It happens regardless of what you eat or how well you slept. The depth is what varies. The goal is not to eliminate it — it's to manage how deep it goes and plan around it.</div>
     </div>
@@ -237,7 +237,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
     <div class="learn-sec-title">What your choices actually control</div>
     <div class="arc-edu-wrap">
       <div class="arc-edu-svg-pad">
-        <svg id="compArcSVG" viewBox="0 0 330 78" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        <svg id="compArcSVG" viewBox="0 0 330 90" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
       </div>
       <div class="arc-edu-legend" id="compLegend"></div>
       <div class="arc-edu-note">Same person, same day of the week. The difference is sleep quality, food sequence, and one 10-minute walk. <strong>This gap is what Elsin navigates.</strong></div>
@@ -246,18 +246,18 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 
   <!-- Behaviour cards -->
   <div class="learn-sec">
-    <div class="learn-sec-title">Four things that change the wave</div>
+    <div class="learn-sec-title">Five things that change the wave</div>
 
     <!-- Walk -->
     <div class="bcard">
       <div class="bcard-top">
-        <div class="bcard-tag">MOVEMENT</div>
+        <div class="bcard-tag">AFTER-MEAL WALK</div>
         <div class="bcard-title">A 10-minute walk after eating</div>
         <div class="bcard-delta">Afternoon dip: <span>30–40% shallower</span></div>
       </div>
       <div class="bcard-arc-wrap">
         <div class="bcard-arc-pad">
-          <svg id="walkArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+          <svg id="walkArcSVG" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
         </div>
         <div class="bcard-legend" id="walkLegend"></div>
       </div>
@@ -277,7 +277,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       </div>
       <div class="bcard-arc-wrap">
         <div class="bcard-arc-pad">
-          <svg id="seqArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+          <svg id="seqArcSVG" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
         </div>
         <div class="bcard-legend" id="seqLegend"></div>
       </div>
@@ -297,7 +297,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       </div>
       <div class="bcard-arc-wrap">
         <div class="bcard-arc-pad">
-          <svg id="sleepArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+          <svg id="sleepArcSVG" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
         </div>
         <div class="bcard-legend" id="sleepLegend"></div>
       </div>
@@ -316,13 +316,33 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       </div>
       <div class="bcard-arc-wrap">
         <div class="bcard-arc-pad">
-          <svg id="ctypeArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+          <svg id="ctypeArcSVG" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
         </div>
         <div class="bcard-legend" id="ctypeLegend"></div>
       </div>
       <div class="bcard-body">
         <p>Morning types peak early. Evening types forced to a 7am start are operating under social jet lag — their body clock says it's still 5:30am. They're sluggish in the morning, peak later, and their slow zone falls at 3–4pm, not 2pm. Knowing your type means knowing when to schedule hard work and when to protect the slow window.</p>
         <div class="bcard-pull">"That 3pm meeting you dread? It may be your biological low — not a motivation problem."</div>
+      </div>
+    </div>
+
+    <!-- Exercise -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">EXERCISE</div>
+        <div class="bcard-title">A workout shifts your ceiling for the whole afternoon</div>
+        <div class="bcard-delta">Afternoon energy floor: <span>25–35 points higher</span> on workout days</div>
+      </div>
+      <div class="bcard-arc-wrap">
+        <div class="bcard-arc-pad">
+          <svg id="exerciseArcSVG" viewBox="0 0 300 60" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        </div>
+        <div class="bcard-legend" id="exerciseLegend"></div>
+      </div>
+      <div class="bcard-body">
+        <p>A structured workout — separate from the post-meal walk — produces a metabolic lift that runs for 90–120 minutes after you finish. The effect is strong enough to flatten or eliminate the afternoon slow zone entirely on good workout days.</p>
+        <p>This is not the same mechanism as the post-meal walk. The walk redirects meal energy. The workout raises your metabolic baseline and shifts your energy ceiling upward for hours.</p>
+        <div class="bcard-pull">"The workout doesn't happen at the gym. It happens in the two hours after."</div>
       </div>
     </div>
 
@@ -467,6 +487,10 @@ const EDU = {
   // Sleep — full 14h day (57 pts)
   goodSleep:  [52,56,62,68,74,78,80,79,78,76,74,71,68,65,61,57,52,48,45,43,43,45,48,52,55,56,54,51,48,45,42,40,38,36,34,33,32,31,30,28,26,24,22,20,18,16,15,14,13,12,11,10,10,10,10,10,10],
   poorSleep:  [34,37,40,42,45,47,48,48,47,46,44,42,40,37,34,31,28,26,24,23,23,25,27,30,32,33,32,30,28,26,24,22,20,19,18,17,16,15,14,13,12,11,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+  // Exercise — 6h window (24 pts) from 10am. Workout done at 8am, effect peaks at 10am.
+  // noExercise: natural slow-zone decline. withExercise: post-workout lift keeps ceiling high.
+  noExercise:   [57,54,51,48,45,42,40,39,38,38,39,40,41,42,43,43,42,41,40,39,38,37,36,35],
+  withExercise: [74,76,76,74,72,70,67,63,60,57,55,53,51,49,48,47,46,45,44,43,42,41,40,39],
   // Chronotype — same clock 7am start, 14h day (57 pts)
   // Morning type: aligned, peaks early (slot 8 = 9am), slow zone slot 25 (1:15pm)
   mornType:   [52,56,62,68,74,78,80,79,78,76,74,71,68,65,61,57,52,48,45,43,43,45,48,52,55,56,54,51,48,45,42,40,38,36,34,33,32,31,30,28,26,24,22,20,18,16,15,14,13,12,11,10,10,10,10,10,10],
@@ -1048,6 +1072,16 @@ function renderLearnArcs(){
     {color:'#D4923A',dashed:true, label:'Evening type (forced 7am start)'},
     {color:'#5B9CF6',dashed:false,label:'Morning type (natural 7am start)'}
   ]);
+
+  // Exercise: 6h window 10am–4pm. Workout done at 8am, lift persists.
+  renderMiniArc('exerciseArcSVG', EDU.noExercise, EDU.withExercise,'#C44848','#4EAF68',
+    [{pos:8,label:'L'}],
+    [{pos:0,t:'10am'},{pos:12,t:'1pm'},{pos:23,t:'4pm'}]
+  );
+  makeLegend('exerciseLegend',[
+    {color:'#C44848',dashed:true, label:'No workout today'},
+    {color:'#4EAF68',dashed:false,label:'Workout done at 8am'}
+  ]);
 }
 
 // ═══ INPUT HANDLERS ═══
@@ -1089,7 +1123,7 @@ function syncStressUI(){
 
 function cycleExercise(){ S.exercise=EX_S[(EX_S.indexOf(S.exercise)+1)%EX_S.length]; syncExUI(); refresh(); }
 function syncExUI(){
-  const l={off:'Off',walk:'Walk',longwalk:'Long walk',workout:'Workout',endurance:'Endurance'};
+  const l={off:'Exercise',walk:'Walk',longwalk:'Long walk',workout:'Workout',endurance:'Endurance'};
   const chip=document.getElementById('chip-ex');
   chip.textContent=l[S.exercise];
   chip.className=`chip ${S.exercise!=='off'?'cg':''}`;
@@ -1107,7 +1141,7 @@ function toggleFasting(){
   S.fasting=!S.fasting;
   const chip=document.getElementById('chip-fast');
   chip.className=`chip ${S.fasting?'cc':''}`;
-  chip.textContent='IF';
+  chip.textContent=S.fasting?'IF':'Fasting';
   refresh();
 }
 

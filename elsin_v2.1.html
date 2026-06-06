@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Elsin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-height:100vh}
+:root{
+  --bg:#191D17;--bg2:#20251E;--bg3:#272D25;--sf:#2E342C;--sf2:#363D34;
+  --br:#3C4239;--br2:#4A5147;
+  --tx:#E8E3D8;--tx2:#A8A296;--tx3:#686860;
+  --ac:#5B9CF6;--gr:#4EAF68;--am:#D4923A;--rd:#C44848;
+  --gbg:rgba(78,175,104,.12);--abg:rgba(212,146,58,.12);--rbg:rgba(196,72,72,.12);--cbg:rgba(91,156,246,.12);
+}
+.shell{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg)}
+@media(min-width:430px){body{background:#0E1110}.shell{border-left:1px solid var(--br);border-right:1px solid var(--br);box-shadow:0 0 80px rgba(0,0,0,.5)}}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 20px 11px;background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:100}
+.wm{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.14em;color:var(--tx)}
+.hdate{font-size:.7rem;color:var(--tx3);letter-spacing:.04em}
+.scr{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:80px;flex:1}
+.scr.on{display:block}
+
+/* ── SETUP STRIP ── */
+.setup{background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:57px;z-index:90;padding:8px 14px 6px}
+.setup-row1{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.chrono-toggle{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid var(--gr);background:var(--gbg);color:var(--gr);cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:all .18s;-webkit-appearance:none;letter-spacing:.02em}
+.chrono-toggle.eve{border-color:var(--ac);background:var(--cbg);color:var(--ac)}
+.setup-chips{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;flex:1}
+.setup-chips::-webkit-scrollbar{display:none}
+.chip{font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:13px;border:1px solid var(--br);background:var(--sf);color:var(--tx2);white-space:nowrap;cursor:pointer;transition:all .18s;-webkit-appearance:none;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.chip.cg{border-color:var(--gr);color:var(--gr);background:var(--gbg)}
+.chip.ca{border-color:var(--am);color:var(--am);background:var(--abg)}
+.chip.cr{border-color:var(--rd);color:var(--rd);background:var(--rbg)}
+.chip.cc{border-color:var(--ac);color:var(--ac);background:var(--cbg)}
+.setup-extime{display:none;align-items:center;gap:8px;padding-top:6px}
+.setup-extime.on{display:flex}
+.tin-lbl{font-size:.66rem;color:var(--tx3)}
+.tin{background:var(--sf);border:1px solid var(--br);border-radius:7px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.76rem;padding:4px 9px;outline:none;transition:border-color .2s}
+.tin:focus{border-color:var(--ac)}
+
+/* ── DAY SUMMARY ── */
+.day-sum{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;background:var(--bg);border-bottom:1px solid var(--br)}
+.day-sum-band{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em}
+.day-sum-desc{font-size:.65rem;color:var(--tx3);text-align:right;max-width:62%;line-height:1.4}
+
+/* ── SLATES ── */
+.slates-wrap{padding:10px 0 6px}
+.slate-row{margin:0 14px 6px;position:relative}
+.slate{display:flex;align-items:stretch;background:var(--sf);border:1px solid var(--br);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .2s;min-height:58px}
+.slate:hover{border-color:var(--br2)}
+.slate.now{border-color:var(--ac);background:rgba(91,156,246,.05)}
+.slate.open{border-radius:10px 10px 0 0;border-bottom-color:transparent}
+.slate.skipped{opacity:.48}
+.slate.skipped .slate-name{text-decoration:line-through;color:var(--tx3)}
+.slate.rest-mode{background:var(--bg2)}
+.slate.rest-mode .slate-name{color:var(--tx2)}
+.slate.rest-mode .slate-action{color:var(--tx3)}
+.slate-bar{width:5px;flex-shrink:0}
+.bar-gr{background:var(--gr)}.bar-am{background:var(--am)}.bar-rd{background:var(--rd)}.bar-dk{background:var(--br2)}
+.slate-score{width:36px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.15rem;flex-shrink:0;letter-spacing:.02em;padding:0 2px}
+.slate-body{flex:1;padding:8px 6px 8px 4px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0}
+.slate-time{font-size:.59rem;color:var(--tx3);letter-spacing:.03em;font-weight:600;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.slate-tag{font-size:.55rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:1px 5px;border-radius:4px;white-space:nowrap}
+.tag-now{color:var(--ac);background:var(--cbg);border:1px solid rgba(91,156,246,.3)}
+.tag-slow{color:var(--am);background:var(--abg);border:1px solid rgba(212,146,58,.3)}
+.tag-peak{color:var(--gr);background:var(--gbg);border:1px solid rgba(78,175,104,.3)}
+.tag-rest{color:var(--tx3);background:var(--sf2);border:1px solid var(--br)}
+.slate-name{font-family:'Bebas Neue',sans-serif;font-size:.98rem;letter-spacing:.06em;color:var(--tx);line-height:1.1}
+.slate-action{font-size:.7rem;color:var(--tx2);line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.slate-right{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 8px 6px 2px;flex-shrink:0}
+.adj-btn{font-size:.78rem;color:var(--tx3);background:var(--sf2);border:1px solid var(--br);border-radius:4px;width:22px;height:18px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;-webkit-appearance:none}
+.adj-btn:hover{color:var(--ac);border-color:var(--ac)}
+.slate-chevron{font-size:.72rem;color:var(--tx3);transition:transform .2s;margin-top:2px}
+.slate.open .slate-chevron{transform:rotate(90deg)}
+.skip-btn{position:absolute;top:5px;right:5px;width:18px;height:18px;border-radius:50%;background:var(--sf2);border:1px solid var(--br);color:var(--tx3);font-size:.62rem;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;font-family:'DM Sans',sans-serif;transition:all .15s;z-index:2;line-height:1}
+.skip-btn:hover{color:var(--am);border-color:var(--am)}
+.skip-btn.on{background:var(--abg);border-color:var(--am);color:var(--am)}
+.slate-detail{display:none;background:var(--bg2);border:1px solid var(--br);border-top:none;border-radius:0 0 10px 10px;padding:12px 14px;margin:0 14px 6px}
+.slate-detail.on{display:block}
+.slate-detail.now-hl{border-color:var(--ac)}
+.slate-detail-body{font-size:.8rem;color:var(--tx2);line-height:1.6}
+.slate-detail-why{font-size:.71rem;color:var(--tx3);margin-top:8px;padding-top:8px;border-top:1px solid var(--br);line-height:1.5}
+
+/* ── LEARN TAB ── */
+.learn-intro{padding:15px 20px 12px;border-bottom:1px solid var(--br)}
+.learn-intro-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.07em;color:var(--tx);margin-bottom:5px}
+.learn-intro-body{font-size:.81rem;color:var(--tx2);line-height:1.6}
+.learn-intro-body strong{color:var(--tx)}
+.learn-sec{padding:12px 20px 4px}
+.learn-sec-title{font-size:.61rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3);margin-bottom:9px}
+.arc-edu-wrap{background:var(--bg3);border:1px solid var(--br);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.arc-edu-svg-pad{padding:10px 10px 2px}
+.arc-edu-note{font-size:.73rem;color:var(--tx2);line-height:1.55;padding:9px 12px;background:var(--sf);border-top:1px solid var(--br)}
+.arc-edu-note strong{color:var(--tx)}
+.arc-edu-legend{display:flex;gap:14px;padding:7px 12px;border-top:1px solid var(--br)}
+.arc-leg-item{font-size:.64rem;color:var(--tx2);display:flex;align-items:center;gap:5px}
+.bcard{background:var(--sf);border:1px solid var(--br);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.bcard-top{padding:13px 14px 4px}
+.bcard-tag{font-size:.59rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--gr);margin-bottom:4px}
+.bcard-title{font-family:'Bebas Neue',sans-serif;font-size:1.08rem;letter-spacing:.06em;color:var(--tx);margin-bottom:3px}
+.bcard-delta{font-size:.77rem;font-weight:600;color:var(--tx);margin-bottom:8px}
+.bcard-delta span{color:var(--gr)}
+.bcard-arc-wrap{background:var(--bg3);border-top:1px solid var(--br)}
+.bcard-arc-pad{padding:8px 10px 4px}
+.bcard-legend{display:flex;gap:14px;padding:6px 10px;border-top:1px solid var(--br);background:var(--bg2)}
+.bcard-body{padding:11px 14px}
+.bcard-body p{font-size:.79rem;color:var(--tx2);line-height:1.6;margin-bottom:6px}
+.bcard-body p:last-child{margin-bottom:0}
+.bcard-pull{font-size:.82rem;color:var(--tx);font-weight:600;font-style:italic;border-top:1px solid var(--br);padding-top:8px;margin-top:4px}
+.deeper-toggle{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:13px 20px;border-top:1px solid var(--br)}
+.deeper-toggle-lbl{font-size:.72rem;font-weight:600;color:var(--tx3)}
+.deeper-chevron{font-size:.75rem;color:var(--tx3);transition:transform .2s}
+.deeper-chevron.on{transform:rotate(90deg)}
+.deeper-cards{display:none;padding:0 20px 10px}
+.deeper-cards.on{display:block}
+.lcard{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:16px;margin-bottom:10px}
+.lcn{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--br2);line-height:1;margin-bottom:5px}
+.lct{font-family:'Bebas Neue',sans-serif;font-size:1.12rem;letter-spacing:.07em;color:var(--tx);margin-bottom:6px}
+.lcb{font-size:.79rem;color:var(--tx2);line-height:1.62}
+.lcp{font-size:.82rem;color:var(--tx);font-weight:600;margin-top:8px;font-style:italic;padding-top:8px;border-top:1px solid var(--br)}
+
+/* ── EAT TAB ── */
+.eat-sec{padding:0 20px 4px}
+.eat-sec-title{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.1em;color:var(--tx3);padding:16px 0 8px;border-bottom:1px solid var(--br);margin-bottom:10px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:4px}
+.mcard{background:var(--sf);border:1px solid var(--br);border-radius:11px;padding:12px;cursor:pointer;transition:border-color .2s}
+.mcard:hover,.mcard.on{border-color:var(--ac)}
+.micon{font-size:1.25rem;margin-bottom:4px}
+.mname{font-size:.79rem;font-weight:700;color:var(--tx);margin-bottom:2px}
+.mtag{font-size:.67rem;color:var(--tx2)}
+.mdet{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--br)}
+.mcard.on .mdet{display:block}
+.mitems{list-style:none}
+.mitems li{font-size:.74rem;color:var(--tx2);padding:4px 0;border-bottom:1px solid var(--br);line-height:1.4}
+.mitems li:last-child{border-bottom:none}
+.mitems li strong{color:var(--tx);display:block}
+.eat-wide{background:var(--sf);border:1px solid var(--br);border-radius:11px;padding:14px;margin-bottom:9px;cursor:pointer;transition:border-color .2s}
+.eat-wide:hover,.eat-wide.on{border-color:var(--ac)}
+.eat-wide-head{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.eat-wide-left{display:flex;align-items:center;gap:10px}
+.eat-wide-icon{font-size:1.25rem}
+.eat-wide-name{font-size:.82rem;font-weight:700;color:var(--tx)}
+.eat-wide-tag{font-size:.68rem;color:var(--tx2)}
+.eat-wide-arr{font-size:.75rem;color:var(--tx3);transition:transform .2s}
+.eat-wide.on .eat-wide-arr{transform:rotate(90deg)}
+.eat-wide-body{display:none;margin-top:11px;padding-top:11px;border-top:1px solid var(--br)}
+.eat-wide.on .eat-wide-body{display:block}
+.eat-wide-body p{font-size:.78rem;color:var(--tx2);line-height:1.58;margin-bottom:8px}
+.eat-wide-body p:last-child{margin-bottom:0}
+.eat-wide-body strong{color:var(--tx)}
+.eat-picks{list-style:none;margin-top:6px}
+.eat-picks li{font-size:.74rem;color:var(--tx2);padding:5px 0;border-bottom:1px solid var(--br);display:flex;align-items:flex-start;gap:7px;line-height:1.4}
+.eat-picks li:last-child{border-bottom:none}
+.eat-picks li .pick-dot{width:6px;height:6px;border-radius:50%;background:var(--gr);flex-shrink:0;margin-top:4px}
+.eat-picks li .pick-dot.am{background:var(--am)}
+.eat-picks li .pick-dot.rd{background:var(--rd)}
+
+/* ── NAV ── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:64px;background:var(--bg2);border-top:1px solid var(--br);display:flex;align-items:center;justify-content:space-around;z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+@media(min-width:430px){.bnav{border-left:1px solid var(--br);border-right:1px solid var(--br)}}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 22px;border:none;background:transparent;cursor:pointer}
+.nb-icon{font-size:1.1rem;opacity:.35;transition:opacity .2s}
+.nb-lbl{font-family:'DM Sans',sans-serif;font-size:.57rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);transition:color .2s}
+.nb.on .nb-icon{opacity:1}
+.nb.on .nb-lbl{color:var(--ac)}
+@keyframes pulse{0%,100%{opacity:.9}50%{opacity:.5}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="hdr">
+  <div class="wm">ELSIN</div>
+  <div class="hdate" id="hdrDate"></div>
+</header>
+
+<!-- ═══ TODAY ═══ -->
+<section class="scr on" id="s-today">
+
+  <div class="setup">
+    <div class="setup-row1">
+      <button class="chrono-toggle" id="chronoToggle" onclick="toggleChrono()">Morning ⇄</button>
+      <div class="setup-chips">
+        <button class="chip cg" id="chip-sl" onclick="cycleSleep()">😴 Good</button>
+        <button class="chip cg" id="chip-feel" onclick="cycleFeel()">⚡ Good</button>
+        <button class="chip" id="chip-ex" onclick="cycleExercise()">Off</button>
+        <button class="chip" id="chip-fast" onclick="toggleFasting()">IF</button>
+        <button class="chip cc" id="chip-ctx" onclick="cycleContext()">Work</button>
+        <button class="chip" id="chip-ton" onclick="cycleTonightChip()">Normal</button>
+        <button class="chip" id="chip-stress" onclick="cycleStressChip()">Stress</button>
+      </div>
+    </div>
+    <div class="setup-extime" id="exTimeRow">
+      <span class="tin-lbl">At</span>
+      <input class="tin" type="time" id="t-ex" value="08:00" oninput="onInputChange()">
+    </div>
+  </div>
+
+  <div class="day-sum" id="daySummary">
+    <div class="day-sum-band" id="daySumBand" style="color:var(--gr)">Strong day ahead</div>
+    <div class="day-sum-desc" id="daySumDesc">Good inputs. Peak window arrives early.</div>
+  </div>
+
+  <div class="slates-wrap" id="slatesWrap"></div>
+
+</section>
+
+<!-- ═══ LEARN ═══ -->
+<section class="scr" id="s-learn">
+
+  <div class="learn-intro">
+    <div class="learn-intro-title">Your natural energy wave</div>
+    <div class="learn-intro-body"><strong>Your energy follows a predictable pattern every day — regardless of what you eat.</strong> Understanding the shape changes how you respond to it. The four habits below move the needle most — and the graphs show exactly what they do.</div>
+  </div>
+
+  <!-- Natural wave -->
+  <div class="learn-sec">
+    <div class="learn-sec-title">The wave you always have</div>
+    <div class="arc-edu-wrap">
+      <div class="arc-edu-svg-pad">
+        <svg id="baseArcSVG" viewBox="0 0 330 78" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+      </div>
+      <div class="arc-edu-note"><strong>The slow zone in the early afternoon is built into human biology.</strong> It happens regardless of what you eat or how well you slept. The depth is what varies. The goal is not to eliminate it — it's to manage how deep it goes and plan around it.</div>
+    </div>
+  </div>
+
+  <!-- Floor / Ceiling -->
+  <div class="learn-sec">
+    <div class="learn-sec-title">What your choices actually control</div>
+    <div class="arc-edu-wrap">
+      <div class="arc-edu-svg-pad">
+        <svg id="compArcSVG" viewBox="0 0 330 78" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+      </div>
+      <div class="arc-edu-legend" id="compLegend"></div>
+      <div class="arc-edu-note">Same person, same day of the week. The difference is sleep quality, food sequence, and one 10-minute walk. <strong>This gap is what Elsin navigates.</strong></div>
+    </div>
+  </div>
+
+  <!-- Behaviour cards -->
+  <div class="learn-sec">
+    <div class="learn-sec-title">Four things that change the wave</div>
+
+    <!-- Walk -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">MOVEMENT</div>
+        <div class="bcard-title">A 10-minute walk after eating</div>
+        <div class="bcard-delta">Afternoon dip: <span>30–40% shallower</span></div>
+      </div>
+      <div class="bcard-arc-wrap">
+        <div class="bcard-arc-pad">
+          <svg id="walkArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        </div>
+        <div class="bcard-legend" id="walkLegend"></div>
+      </div>
+      <div class="bcard-body">
+        <p>A short walk within 20 minutes of a meal sends the energy from that meal directly to your muscles rather than your bloodstream. The post-meal slump becomes shorter, shallower, and you stay sharper for longer.</p>
+        <p>It works as well as changing what you eat — and takes 10 minutes.</p>
+        <div class="bcard-pull">"The best lunch isn't on the menu. It's the walk after it."</div>
+      </div>
+    </div>
+
+    <!-- Sequence -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">FOOD SEQUENCE</div>
+        <div class="bcard-title">Protein first at every meal</div>
+        <div class="bcard-delta">Post-meal energy floor: <span>20 points higher</span></div>
+      </div>
+      <div class="bcard-arc-wrap">
+        <div class="bcard-arc-pad">
+          <svg id="seqArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        </div>
+        <div class="bcard-legend" id="seqLegend"></div>
+      </div>
+      <div class="bcard-body">
+        <p>Eating protein and fat before carbs at any meal reduces the post-meal glucose spike, which directly reduces the slump that follows. The same plate of food, eaten in the wrong order, makes you feel tired an hour later. Eaten protein-first, you barely notice the meal.</p>
+        <p>You don't need to eat differently or less — just eat the protein before the carbs.</p>
+        <div class="bcard-pull">"Same food. Different order. Completely different afternoon."</div>
+      </div>
+    </div>
+
+    <!-- Sleep -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">SLEEP</div>
+        <div class="bcard-title">One poor night changes the whole ceiling</div>
+        <div class="bcard-delta">Energy ceiling: <span>down 20–35% all day</span></div>
+      </div>
+      <div class="bcard-arc-wrap">
+        <div class="bcard-arc-pad">
+          <svg id="sleepArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        </div>
+        <div class="bcard-legend" id="sleepLegend"></div>
+      </div>
+      <div class="bcard-body">
+        <p>Poor sleep doesn't just make you feel tired — it suppresses your peak ceiling for the entire next day, disrupts appetite signals, and increases carb cravings. On a poor sleep day, Elsin shifts your guidance toward appetite management over optimisation.</p>
+        <div class="bcard-pull">"Sleep debt is an appetite and energy problem, not just a tiredness problem."</div>
+      </div>
+    </div>
+
+    <!-- Chronotype -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">CHRONOTYPE</div>
+        <div class="bcard-title">Your slow zone isn't at 2pm if you're an evening type</div>
+        <div class="bcard-delta">Optimal window: <span>shifts 1.5–2 hours later</span></div>
+      </div>
+      <div class="bcard-arc-wrap">
+        <div class="bcard-arc-pad">
+          <svg id="ctypeArcSVG" viewBox="0 0 300 50" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
+        </div>
+        <div class="bcard-legend" id="ctypeLegend"></div>
+      </div>
+      <div class="bcard-body">
+        <p>Morning types peak early. Evening types forced to a 7am start are operating under social jet lag — their body clock says it's still 5:30am. They're sluggish in the morning, peak later, and their slow zone falls at 3–4pm, not 2pm. Knowing your type means knowing when to schedule hard work and when to protect the slow window.</p>
+        <div class="bcard-pull">"That 3pm meeting you dread? It may be your biological low — not a motivation problem."</div>
+      </div>
+    </div>
+
+  </div><!-- /learn-sec -->
+
+  <div class="deeper-toggle" onclick="toggleDeeper()">
+    <span class="deeper-toggle-lbl">Go deeper — the science behind each principle</span>
+    <span class="deeper-chevron" id="deeperChevron">›</span>
+  </div>
+  <div class="deeper-cards" id="deeperCards">
+    <div class="lcard"><div class="lcn">01</div><div class="lct">Your energy follows a pattern every day</div><div class="lcb">Whether you notice it or not, your alertness rises from the moment you wake, peaks in the mid-morning, dips in the early afternoon, recovers briefly, then fades toward sleep. This isn't tiredness or laziness — it's your body's built-in daily schedule. Once you know the shape, you can plan with it instead of fighting it.</div><div class="lcp">"The 3pm crash isn't a willpower failure. It's in the schedule."</div></div>
+    <div class="lcard"><div class="lcn">02</div><div class="lct">The order you eat changes how you feel after</div><div class="lcb">Starting with protein and fat before eating carbs at any meal reduces the slump that follows by 30–40%. You don't need to eat differently or less — just eat in the right sequence. Protein first. Always.</div><div class="lcp">"Same food. Different order. Completely different afternoon."</div></div>
+    <div class="lcard"><div class="lcn">03</div><div class="lct">A short walk after eating is worth more than you think</div><div class="lcb">A 10-minute walk within 20 minutes of a meal sends the energy from that meal directly to your muscles instead of your bloodstream. The post-meal slump is reduced by up to 40%, and you feel sharper for longer. It works as well as changing what you eat — and it takes 10 minutes.</div><div class="lcp">"A walk after lunch beats the best lunch."</div></div>
+    <div class="lcard"><div class="lcn">04</div><div class="lct">One poor night changes how hungry you feel all day</div><div class="lcb">After a bad night's sleep, your hunger signals break down. You feel hungrier than usual, crave more carbs and sugar, and find it harder to feel full. This isn't weakness — it's a biological response that takes 2–3 good nights to fully reverse.</div><div class="lcp">"Sleep debt is an appetite problem, not just a tiredness problem."</div></div>
+    <div class="lcard"><div class="lcn">05</div><div class="lct">When you eat matters as much as what you eat</div><div class="lcb">Leaving a gap of 14–16 hours overnight between your last meal and your first gives your body time to run on stored energy. You wake up sharper, feel less bloated, and your first meal of the day feels more effective.</div><div class="lcp">"Fasting isn't restriction. It's a timing strategy."</div></div>
+    <div class="lcard"><div class="lcn">06</div><div class="lct">Why stress makes you reach for sugar</div><div class="lcb">After a stressful event, your energy drops sharply. That drop feels like hunger. It isn't. Carbs give a short lift followed by a deeper crash, which extends the low rather than ending it. Protein and fat stabilise the drop without the rebound. The craving is real — the solution is counterintuitive.</div><div class="lcp">"That craving after a bad meeting isn't hunger. It's your energy arc bottoming out."</div></div>
+    <div class="lcard"><div class="lcn">07</div><div class="lct">Ongoing stress is a different problem</div><div class="lcb">A single stressful event causes a dip and recovers within hours. Ongoing stress compresses your energy ceiling over weeks and months. You don't crash dramatically — you just gradually stop getting back to full.</div><div class="lcp">"Ongoing stress quietly lowers the ceiling until you can't remember what full energy felt like."</div></div>
+    <div class="lcard" style="margin-bottom:0"><div class="lcn">08</div><div class="lct">High stress this evening affects tomorrow too</div><div class="lcb">A stressful evening disrupts the hormonal wind-down needed for restorative sleep. While you still have executive function, decide tomorrow's first meal and first decision. A plan set now works under tomorrow's conditions.</div><div class="lcp">"Set tomorrow's defaults tonight — while you still can."</div></div>
+  </div>
+
+</section>
+
+<!-- ═══ EAT ═══ -->
+<section class="scr" id="s-eat">
+  <div class="eat-sec">
+    <div class="eat-sec-title">MEAL STRATEGY</div>
+    <div class="mgrid">
+      <div class="mcard" onclick="this.classList.toggle('on')">
+        <div class="micon">🥩</div><div class="mname">Protein first</div><div class="mtag">Any meal, always</div>
+        <div class="mdet"><ul class="mitems"><li><strong>Eggs</strong>Complete protein, keeps you full</li><li><strong>Chicken, turkey</strong>Lean, high satiety</li><li><strong>Fish</strong>Faster digestion, anti-inflammatory</li><li><strong>Greek yoghurt</strong>Protein + gut health</li><li><strong>Legumes</strong>Slower release — combine with grain</li></ul></div>
+      </div>
+      <div class="mcard" onclick="this.classList.toggle('on')">
+        <div class="micon">🥑</div><div class="mname">Fats second</div><div class="mtag">Extends how full you feel</div>
+        <div class="mdet"><ul class="mitems"><li><strong>Avocado</strong>Filling, heart-healthy fat</li><li><strong>Olive oil</strong>Anti-inflammatory</li><li><strong>Nuts</strong>Good fat, fibre, portable</li><li><strong>Cheese</strong>Protein + fat — watch portions</li></ul></div>
+      </div>
+      <div class="mcard" onclick="this.classList.toggle('on')">
+        <div class="micon">🥦</div><div class="mname">Vegetables</div><div class="mtag">Fibre slows everything down</div>
+        <div class="mdet"><ul class="mitems"><li><strong>Leafy greens</strong>High fibre, low sugar</li><li><strong>Broccoli, cauliflower</strong>Dense, filling</li><li><strong>Courgette, peppers</strong>Volume without the carbs</li><li><strong>Root veg</strong>More sugar — treat as a carb</li></ul></div>
+      </div>
+      <div class="mcard" onclick="this.classList.toggle('on')">
+        <div class="micon">🍚</div><div class="mname">Carbs last</div><div class="mtag">Earn them with timing</div>
+        <div class="mdet"><ul class="mitems"><li><strong>Rice, oats</strong>Best after exercise</li><li><strong>Sweet potato</strong>With protein and fat</li><li><strong>Sourdough</strong>Slower than white bread</li><li><strong>Fruit</strong>Morning or post-exercise</li></ul></div>
+      </div>
+    </div>
+    <div class="eat-sec-title">SNACKS</div>
+    <div class="eat-wide" onclick="this.classList.toggle('on')">
+      <div class="eat-wide-head"><div class="eat-wide-left"><div class="eat-wide-icon">🥜</div><div><div class="eat-wide-name">What makes a good snack</div><div class="eat-wide-tag">Protein + fat · no sugar spike</div></div></div><div class="eat-wide-arr">›</div></div>
+      <div class="eat-wide-body">
+        <p>A snack that hits only carbs gives a short energy lift followed by a sharper crash. A snack with protein and fat keeps energy stable until the next meal.</p>
+        <p><strong>The rule:</strong> pair a carb with protein or fat, or skip the carb entirely.</p>
+        <ul class="eat-picks">
+          <li><div class="pick-dot"></div><div>Hard-boiled eggs — portable, filling, zero preparation needed</div></li>
+          <li><div class="pick-dot"></div><div>Greek yoghurt — protein and fat, filling, quick</div></li>
+          <li><div class="pick-dot"></div><div>Nuts — a small handful stabilises energy for 2–3 hours</div></li>
+          <li><div class="pick-dot"></div><div>Cheese with a few oatcakes — fat, protein, slow carb</div></li>
+          <li><div class="pick-dot am"></div><div>Plain crackers or fruit alone — no protein or fat to slow it down</div></li>
+          <li><div class="pick-dot rd"></div><div>Cereal bars — most are sugar in packaging. Check the label.</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="eat-sec-title">ON THE GO</div>
+    <div class="eat-wide" onclick="this.classList.toggle('on')">
+      <div class="eat-wide-head"><div class="eat-wide-left"><div class="eat-wide-icon">🛒</div><div><div class="eat-wide-name">Supermarket at lunchtime</div><div class="eat-wide-tag">What to pick, what to leave</div></div></div><div class="eat-wide-arr">›</div></div>
+      <div class="eat-wide-body">
+        <p>Most supermarket lunch options are carb-heavy by design. <strong>Build your own from the deli or salad bar</strong> where possible — protein base, fat, then a small carb.</p>
+        <ul class="eat-picks">
+          <li><div class="pick-dot"></div><div>Rotisserie chicken or pre-cooked salmon — grab as protein base</div></li>
+          <li><div class="pick-dot"></div><div>Boiled eggs — usually in the salad section, reliable protein</div></li>
+          <li><div class="pick-dot"></div><div>Full-fat Greek yoghurt pot — protein, fat, minimal sugar</div></li>
+          <li><div class="pick-dot"></div><div>Sushi — reasonable if salmon or tuna based, eat protein pieces first</div></li>
+          <li><div class="pick-dot am"></div><div>Sandwiches and wraps — mostly bread. If unavoidable, eat the filling first</div></li>
+          <li><div class="pick-dot rd"></div><div>Pasta salads, rice pots, noodle boxes — carb-dominant, minimal protein</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="eat-wide" style="margin-bottom:24px" onclick="this.classList.toggle('on')">
+      <div class="eat-wide-head"><div class="eat-wide-left"><div class="eat-wide-icon">☕</div><div><div class="eat-wide-name">Going to a café</div><div class="eat-wide-tag">Choose well, avoid the traps</div></div></div><div class="eat-wide-arr">›</div></div>
+      <div class="eat-wide-body">
+        <p>Cafés are designed to sell pastries, sweet drinks, and sandwiches. <strong>Order coffee black or with milk</strong> — avoid flavoured syrups.</p>
+        <ul class="eat-picks">
+          <li><div class="pick-dot"></div><div>Eggs any style — scrambled, poached, omelette. Usually the best option</div></li>
+          <li><div class="pick-dot"></div><div>Smoked salmon — often available as a side or with eggs</div></li>
+          <li><div class="pick-dot"></div><div>Avocado — good fat, filling. Better with an egg than without</div></li>
+          <li><div class="pick-dot am"></div><div>Porridge — better than pastries, but still mostly carb. Add nuts if available</div></li>
+          <li><div class="pick-dot rd"></div><div>Pastries, muffins, banana bread — almost entirely sugar and refined carb</div></li>
+          <li><div class="pick-dot rd"></div><div>Flavoured lattes — often 30–50g of sugar before any food</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="bnav">
+  <button class="nb on" id="nb-today" onclick="showTab('today')"><div class="nb-icon">⚡</div><div class="nb-lbl">Today</div></button>
+  <button class="nb" id="nb-learn" onclick="showTab('learn')"><div class="nb-icon">💡</div><div class="nb-lbl">Learn</div></button>
+  <button class="nb" id="nb-eat" onclick="showTab('eat')"><div class="nb-icon">🍽</div><div class="nb-lbl">Eat</div></button>
+</nav>
+
+</div>
+<script>
+// ═══ STATE ═══
+const S = {
+  chronotype:'morning',
+  sleep:'good', feel:'good', stress:'none',
+  wakeTime:'07:00', bedTime:'22:30',
+  lunchTime:'12:30', dinnerTime:'19:00',
+  exercise:'off', exerciseTime:'08:00',
+  fasting:false,
+  context:'desk',
+  tonight:'normal',
+  skipped:{ bf:false, lunch:false, dinner:false }
+};
+
+// ═══ CONFIG ═══
+const CFG = {
+  sleepMult:  { good:1.0, ok:0.85, poor:0.65 },
+  feelMult:   { good:1.0, ok:0.93, low:0.84 },
+  chronoShift:{ morning:0, evening:6 },
+  stressMult: { none:1.0, mild:0.92, high:0.80 },
+  ctx:        { desk:0, home:3, travel:-8 },
+  bands:[
+    { min:65, label:'Strong',   color:'#4EAF68' },
+    { min:55, label:'Solid',    color:'#7EC87D' },
+    { min:45, label:'Moderate', color:'#A8A296' },
+    { min:35, label:'Low',      color:'#D4923A' },
+    { min:0,  label:'Depleted', color:'#C44848' }
+  ]
+};
+
+// ═══ PRE-COMPUTED EDUCATION CURVES ═══
+// Hand-tuned to clearly show the contrasts — illustrative, not from user inputs
+const EDU = {
+  // Base natural wave 65 slots (16h). Annotated with meal dips (B=1h, L=5h, D=12h)
+  natural:[52,55,60,65,70,74,77,79,80,80,79,77,75,73,70,67,64,60,56,52,49,46,44,42,41,40,41,43,46,49,52,55,57,58,58,57,55,53,50,47,44,41,38,35,32,30,28,26,24,22,20,18,16,14,13,12,11,10,10,10,10,10,10,10,10,10],
+  // Walk comparison — 5h window from 30min before lunch (21 pts = 5h @ 15min)
+  noWalk: [68,65,60,53,46,41,38,37,37,38,40,43,45,46,47,47,46,45,44,43,41],
+  walk:   [68,65,60,53,46,41,38,44,54,62,66,67,65,62,58,54,51,48,46,44,42],
+  // Sequence — 4h window from meal start (17 pts)
+  carbFirst:  [65,56,45,37,32,31,32,34,37,40,43,45,46,47,47,46,45],
+  protFirst:  [65,62,58,55,53,54,57,61,64,65,65,64,63,62,61,60,58],
+  // Sleep — full 14h day (57 pts)
+  goodSleep:  [52,56,62,68,74,78,80,79,78,76,74,71,68,65,61,57,52,48,45,43,43,45,48,52,55,56,54,51,48,45,42,40,38,36,34,33,32,31,30,28,26,24,22,20,18,16,15,14,13,12,11,10,10,10,10,10,10],
+  poorSleep:  [34,37,40,42,45,47,48,48,47,46,44,42,40,37,34,31,28,26,24,23,23,25,27,30,32,33,32,30,28,26,24,22,20,19,18,17,16,15,14,13,12,11,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10],
+  // Chronotype — same clock 7am start, 14h day (57 pts)
+  // Morning type: aligned, peaks early (slot 8 = 9am), slow zone slot 25 (1:15pm)
+  mornType:   [52,56,62,68,74,78,80,79,78,76,74,71,68,65,61,57,52,48,45,43,43,45,48,52,55,56,54,51,48,45,42,40,38,36,34,33,32,31,30,28,26,24,22,20,18,16,15,14,13,12,11,10,10,10,10,10,10],
+  // Evening type: social jet lag (starts at 32), peaks later (slot 14 = 10:30am), slow zone slot 31 (3pm), advantage in late afternoon
+  eveType:    [32,35,38,42,47,52,58,63,68,71,73,73,72,70,68,66,63,60,57,53,50,48,47,47,48,50,52,54,55,55,54,52,50,48,45,43,40,38,35,32,30,28,25,22,20,18,16,14,12,11,10,10,10,10,10,10,10]
+};
+
+// ═══ TIME HELPERS ═══
+function timeToSlot(t){ const[h,m]=t.split(':').map(Number); return h*4+Math.floor(m/15); }
+function slotToStr(s){ const tot=(s%96)*15,h=Math.floor(tot/60)%24,m=tot%60,ap=h>=12?'pm':'am',hd=h%12||12; return `${hd}:${m.toString().padStart(2,'0')}${ap}`; }
+function slotToHHMM(s){ const tot=(s%96)*15,h=Math.floor(tot/60)%24,m=tot%60; return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`; }
+function getCurrentSlot(){ const n=new Date(); return n.getHours()*4+Math.floor(n.getMinutes()/15); }
+function getBand(v){ return CFG.bands.find(b=>v>=b.min)||CFG.bands[CFG.bands.length-1]; }
+function barCls(v){ return v>=65?'bar-gr':v>=45?'bar-am':v>=30?'bar-rd':'bar-dk'; }
+
+// ═══ BASE CIRCADIAN ═══
+function baseEnergy(h){
+  const kf=[[0,52],[0.5,60],[1.5,74],[2.5,82],[3.5,80],[5,75],[6,67],[7,57],[8,49],[9,54],[10.5,61],[12,59],[13.5,52],[15,43],[16,34]];
+  if(h<=0) return kf[0][1];
+  if(h>=kf[kf.length-1][0]) return kf[kf.length-1][1];
+  for(let i=1;i<kf.length;i++){
+    if(h<=kf[i][0]){ const t=(h-kf[i-1][0])/(kf[i][0]-kf[i-1][0]); return kf[i-1][1]+(kf[i][1]-kf[i-1][1])*t; }
+  }
+  return 50;
+}
+
+// ═══ BUILD ARC ═══
+let arcData=[];
+function buildArc(){
+  const wakeS=timeToSlot(S.wakeTime), bedS=timeToSlot(S.bedTime);
+  const adjBed=bedS<=wakeS?bedS+96:bedS;
+  const shift=CFG.chronoShift[S.chronotype];
+  const smult=CFG.sleepMult[S.sleep]*CFG.stressMult[S.stress]*(CFG.feelMult[S.feel]||1.0);
+  const ctxMod=CFG.ctx[S.context]||0;
+  const bfS=S.fasting?wakeS+16:wakeS+4;
+  const lunchS=timeToSlot(S.lunchTime);
+  const dinnerS=timeToSlot(S.dinnerTime);
+  const exS=S.exercise!=='off'?timeToSlot(S.exerciseTime):-1;
+  const dayLen=Math.min(adjBed-wakeS,68);
+  const slots=[];
+
+  for(let i=0;i<=dayLen;i++){
+    const s=wakeS+i, actualS=s%96;
+    const hSinceWake=Math.max(0,(i-shift)/4);
+    let val=baseEnergy(hSinceWake)*smult+ctxMod;
+
+    // Meal modifiers (skip if meal was skipped)
+    const mealList=[
+      [bfS, S.skipped.bf],
+      [lunchS, S.skipped.lunch],
+      [dinnerS, S.skipped.dinner]
+    ];
+    for(const[ms,skip] of mealList){
+      if(skip) continue;
+      const d=i-(ms-wakeS);
+      if(d>=0&&d<=12){ val+=-6*Math.exp(-0.5*d); if(d>=6) val+=4*(1-Math.exp(-(d-6))); }
+    }
+
+    // Exercise
+    if(exS>=0){
+      const ed=i-(exS-wakeS);
+      if(S.exercise==='walk'&&ed>=0&&ed<=3) val+=6;
+      else if(S.exercise==='longwalk'&&ed>=0&&ed<=6) val+=9;
+      else if(S.exercise==='workout'){
+        if(ed>=0&&ed<=4) val+=12;
+        else if(ed>4&&ed<=9) val+=12-6*(ed-4);
+        else if(ed>9&&ed<=16) val+=18*Math.exp(-(ed-9)*0.35);
+      } else if(S.exercise==='endurance'){
+        if(ed>8&&ed<=14) val-=8;
+        else if(ed>14&&ed<=20) val+=12*Math.exp(-(ed-14)*0.3);
+      }
+    }
+
+    // Fasting boost
+    if(S.fasting&&s<bfS) val+=5;
+    // Party / early
+    if(S.tonight==='party'&&s>=adjBed-8) val-=5;
+    if(S.tonight==='early'&&s>=adjBed-8) val+=3;
+
+    val=Math.max(10,Math.min(95,val));
+    slots.push({s,slot:actualS,idx:i,val:Math.round(val),timeStr:slotToStr(actualS)});
+  }
+  return slots;
+}
+
+// ═══ BUILD SLATES ═══
+function buildSlates(){
+  arcData=buildArc();
+  if(!arcData.length) return [];
+
+  const wakeS=timeToSlot(S.wakeTime), bedS=timeToSlot(S.bedTime);
+  const adjBed=bedS<=wakeS?bedS+96:bedS;
+  const bfS=S.fasting?wakeS+16:wakeS+4;
+  const exS=S.exercise!=='off'?timeToSlot(S.exerciseTime):-1;
+
+  // Resolve exercise/lunch conflict
+  // If workout/endurance starts within 2h of lunch, push lunch to post-exercise
+  let lunchS=timeToSlot(S.lunchTime);
+  let lunchConflict=false;
+  if(exS>=0&&(S.exercise==='workout'||S.exercise==='endurance')){
+    const exDur=S.exercise==='endurance'?24:4;
+    const exEnd=exS+exDur;
+    if(Math.abs(lunchS-exS)<=8){
+      lunchS=exEnd+2; // 30min after exercise ends
+      lunchConflict=true;
+    }
+  }
+
+  const dinnerS=timeToSlot(S.dinnerTime);
+  const slowFrom=lunchS+4, slowTo=lunchS+12;
+  const caffCut=adjBed-32;
+  const windDown=adjBed-8;
+
+  // Is post-meal walk applicable?
+  const isWalkExercise=S.exercise==='walk'||S.exercise==='longwalk';
+  // Is walk near lunch (within 2h of lunch)?
+  const walkNearLunch=isWalkExercise&&Math.abs(exS-lunchS)<=8;
+
+  // Slow zone - check actual arc values to see if exercise helps
+  const slowData=arcData.filter(d=>d.s>=slowFrom&&d.s<slowTo);
+  const slowAvg=slowData.length?Math.round(slowData.reduce((s,d)=>s+d.val,0)/slowData.length):50;
+  const slowExerciseHelping=slowAvg>=52&&exS>=0;
+
+  // Event definitions
+  const events=[
+    {
+      slot:wakeS, type:'wake', mealId:'', tag:'peak',
+      label:'Morning window',
+      action:'Your sharpest window. Protect it — hard thinking, difficult conversations.',
+      detail:'Your alertness system peaks within the first 1–2 hours of waking. Eating carbs early blunts this. Protein and fat let it run its full course. This is the most productive cognitive window of your day.',
+      adjustable:false
+    },
+    {
+      slot:bfS, type:'meal', mealId:'bf', tag:'',
+      label:S.fasting?'Break fast':'Breakfast',
+      action:S.fasting?'Break your fast — protein first to avoid a spike after the overnight gap.':'Protein first — then fat, then carbs if you want them.',
+      detail:S.fasting?'After a 14–16 hour fast your insulin sensitivity is high. A protein-first break-fast avoids a sharp glucose spike and keeps you stable for the next 3–4 hours.':'Eating protein before carbs reduces the post-meal slump by 30–40%. The same plate, eaten in the right sequence, delivers more energy and less crash.',
+      adjustable:true, mealKey:'bfRelative'
+    }
+  ];
+
+  if(exS>=0){
+    const exLabel={walk:'Post-meal walk',longwalk:'Post-meal walk',workout:'Workout',endurance:'Endurance'}[S.exercise]||'Exercise';
+    const isHighStressIntense=S.stress==='high'&&(S.exercise==='workout'||S.exercise==='endurance');
+    events.push({
+      slot:exS, type:'exercise', mealId:'', tag:'',
+      label:exLabel,
+      action:isHighStressIntense?'High stress today — consider dialling back intensity.':
+             S.exercise==='endurance'?'Endurance session — carbs essential today. Small portion 30 min before.':
+             isWalkExercise?'Walk after eating — moves energy to muscles, reduces post-meal dip by 40%.':
+             'Hydrate now. Recovery meal with protein within 30 min after.',
+      detail:isHighStressIntense?'Low-to-moderate intensity is the evidence-supported dose under stress — it lifts energy and reduces fatigue without compounding cortisol load.':
+             isWalkExercise?'Walking within 20 minutes of a meal is one of the highest-leverage actions you can take. It redirects glucose to muscle uptake, reducing the post-meal dip by up to 40%.':
+             'A workout at this point gives you an energy lift that runs for 90–120 minutes. Recovery meal (protein + some carbs) within 30 minutes is the most productive meal of your day today.',
+      adjustable:true, mealKey:'exerciseTime'
+    });
+  }
+
+  events.push({
+    slot:lunchS, type:'meal', mealId:'lunch', tag:'',
+    label:lunchConflict?'Lunch (moved — workout conflict)':'Lunch',
+    action:walkNearLunch?'Protein first · walk straight after — biggest lever of the day.':
+           S.exercise!=='off'?'Protein first — eat in sequence.':
+           'Protein first — eat in sequence. A 10-min walk would help if available.',
+    detail:walkNearLunch?'The post-meal walk reduces the afternoon dip by 30–40%. Eat protein-first, then walk within 20 minutes of finishing. This is the single highest-leverage action of the day.':
+           'Protein first reduces the post-meal slump by 30–40%. The sequence matters more on days with limited movement — it\'s your main lever when a walk isn\'t happening.',
+    adjustable:true, mealKey:'lunchTime'
+  });
+
+  // Slow zone
+  events.push({
+    slot:slowFrom, type:'slow', mealId:'', tag:slowExerciseHelping?'':'slow',
+    label:slowExerciseHelping?'Slow zone — exercise is helping':slowAvg<45?'Natural slow zone':'Slow zone — managed',
+    action:slowExerciseHelping?'Exercise has raised your floor here. Energy is higher than expected for this window.':
+           'This dip is biological — everyone has it. Plan low-demand work, admin, or a short rest here.',
+    detail:slowExerciseHelping?'The workout has lifted your energy through what would otherwise be the deepest part of the day. Use this window for work that normally suffers in the afternoon.':
+           'The afternoon energy dip is part of your natural rhythm — it happens regardless of inputs. The depth is what your choices control: good sleep, a post-lunch walk, and protein-first eating make it shallower. A poor night or carb-heavy lunch makes it deeper.',
+    adjustable:false
+  });
+
+  // Caffeine cut-off
+  if(caffCut>slowTo&&caffCut<adjBed){
+    events.push({
+      slot:caffCut, type:'caff', mealId:'', tag:'',
+      label:'Last caffeine',
+      action:'Stop caffeine after this point — it will affect tonight\'s sleep.',
+      detail:'Caffeine has a 5–6 hour half-life. A coffee at this time still has 25–30% of its effect at midnight, reducing slow-wave sleep without preventing sleep onset. You won\'t feel it keeping you awake — you\'ll feel the difference tomorrow.',
+      adjustable:false
+    });
+  }
+
+  // Dinner
+  events.push({
+    slot:dinnerS, type:'meal', mealId:'dinner', tag:'',
+    label:'Dinner',
+    action:'Protein first. Moderate carbs — what you eat now shapes tomorrow\'s start.',
+    detail:'Evening carbs eaten close to sleep onset can reduce slow-wave sleep quality. Protein and vegetables are the lower-risk choice. If you want carbs, pair them with protein and fat to slow absorption.',
+    adjustable:true, mealKey:'dinnerTime'
+  });
+
+  if(S.tonight==='party'){
+    events.push({
+      slot:adjBed-16, type:'party', mealId:'', tag:'',
+      label:'Going out prep',
+      action:'Eat a proper meal before you go — do not arrive hungry.',
+      detail:'A protein and fat meal before drinking slows alcohol absorption by 30–40%. It also reduces the reactive hunger that leads to poor food choices later in the evening.',
+      adjustable:false
+    });
+  }
+
+  // Wind down — rest mode
+  events.push({
+    slot:windDown, type:'wind-down', mealId:'', tag:'rest',
+    label:'Wind down',
+    action:'Low energy here is healthy and correct — your body is preparing for sleep.',
+    detail:'The natural decline toward bedtime is the intended outcome of the day. Stimulation, bright screens, and late eating delay the hormonal wind-down needed for restorative sleep. While you still have executive function, set tomorrow\'s first meal and first decision.',
+    adjustable:false, isRest:true
+  });
+
+  // Sort and deduplicate
+  events.sort((a,b)=>a.slot-b.slot);
+  const filtered=[];
+  for(const ev of events){
+    if(ev.slot>=wakeS&&ev.slot<adjBed){
+      if(!filtered.length||ev.slot-filtered[filtered.length-1].slot>=2) filtered.push(ev);
+    }
+  }
+
+  // Build slate objects
+  const nowSlot=getCurrentSlot();
+  const slates=[];
+
+  for(let i=0;i<filtered.length;i++){
+    const ev=filtered[i];
+    const nextEv=filtered[i+1];
+    const toSlot=nextEv?nextEv.slot:adjBed;
+    const isRest=ev.isRest||ev.type==='wind-down'||(ev.slot>=dinnerS+8);
+    const windowData=arcData.filter(d=>d.s>=ev.slot&&d.s<Math.min(toSlot,ev.slot+12));
+    const avgVal=windowData.length?Math.round(windowData.reduce((s,d)=>s+d.val,0)/windowData.length):50;
+    const band=getBand(avgVal);
+    const fromMod=ev.slot%96, toMod=toSlot%96;
+    const isNow=toMod>fromMod?(nowSlot>=fromMod&&nowSlot<toMod):(nowSlot>=fromMod||nowSlot<toMod);
+
+    slates.push({
+      id:`sl-${i}`,type:ev.type,mealId:ev.mealId||'',tag:ev.tag||'',
+      label:ev.label,fromStr:slotToStr(ev.slot%96),toStr:slotToStr(toSlot%96),
+      avgVal,band,action:ev.action,detail:ev.detail,
+      isNow,isRest,
+      adjustable:ev.adjustable||false,mealKey:ev.mealKey||''
+    });
+  }
+  return slates;
+}
+
+// ═══ RENDER SLATES ═══
+function renderSlates(){
+  const slates=buildSlates();
+  const wrap=document.getElementById('slatesWrap');
+  wrap.innerHTML='';
+
+  slates.forEach((sl,i)=>{
+    const row=document.createElement('div');
+    row.className='slate-row';
+
+    // Tags
+    let tagHtml='';
+    if(sl.isNow) tagHtml+='<span class="slate-tag tag-now">NOW</span>';
+    if(sl.tag==='slow'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-slow">NATURAL DIP</span>';
+    if(sl.tag==='peak'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-peak">PEAK</span>';
+    if(sl.tag==='rest'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-rest">REST</span>';
+
+    // Bar and score
+    const barClass=sl.isRest?'bar-dk':barCls(sl.avgVal);
+    const scoreHtml=sl.isRest?`<div class="slate-score" style="color:var(--tx3)">—</div>`:`<div class="slate-score" style="color:${sl.band.color}">${sl.avgVal}</div>`;
+
+    // Adj buttons (meal/exercise slates only)
+    const adjHtml=sl.adjustable?`
+      <div class="slate-right">
+        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',2,event)" title="+30 min">▲</button>
+        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',-2,event)" title="−30 min">▼</button>
+        <span class="slate-chevron" id="chev-${i}">›</span>
+      </div>`:`
+      <div class="slate-right"><span class="slate-chevron" id="chev-${i}">›</span></div>`;
+
+    // Skip button (meal slates only — not wind-down or rest)
+    const isMeal=sl.type==='meal'&&sl.mealId;
+    const isSkipped=isMeal&&S.skipped[sl.mealId];
+    const skipHtml=isMeal?`<button class="skip-btn${isSkipped?' on':''}" onclick="skipMeal('${sl.mealId}',event)" title="${isSkipped?'Restore':'Skip this meal'}">${isSkipped?'↩':'×'}</button>`:'';
+
+    const slateClasses=['slate',sl.isNow?'now':'',sl.isRest?'rest-mode':'',isSkipped?'skipped':''].filter(Boolean).join(' ');
+
+    row.innerHTML=`
+      ${skipHtml}
+      <div class="${slateClasses}" id="${sl.id}" onclick="toggleSlate(${i})">
+        <div class="slate-bar ${barClass}"></div>
+        ${scoreHtml}
+        <div class="slate-body">
+          <div class="slate-time">${sl.fromStr} – ${sl.toStr} ${tagHtml}</div>
+          <div class="slate-name">${sl.label}</div>
+          <div class="slate-action">${sl.action}</div>
+        </div>
+        ${adjHtml}
+      </div>
+      <div class="slate-detail${sl.isNow?' now-hl':''}" id="det-${i}">
+        <div class="slate-detail-body">${sl.detail}</div>
+        ${sl.adjustable?'<div class="slate-detail-why">Use ▲▼ to shift this time by 30 min — everything recalculates.</div>':''}
+      </div>`;
+
+    wrap.appendChild(row);
+  });
+
+  updateDaySummary();
+}
+
+let openSlate=-1;
+function toggleSlate(i){
+  const det=document.getElementById(`det-${i}`);
+  const slate=document.getElementById(`sl-${i}`);
+  const chev=document.getElementById(`chev-${i}`);
+  if(!det) return;
+  const wasOpen=det.classList.contains('on');
+  document.querySelectorAll('.slate-detail').forEach(d=>d.classList.remove('on'));
+  document.querySelectorAll('.slate').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.slate-chevron').forEach(c=>c.style.transform='');
+  if(!wasOpen){ det.classList.add('on'); slate&&slate.classList.add('open'); if(chev) chev.style.transform='rotate(90deg)'; openSlate=i; }
+  else openSlate=-1;
+}
+
+function adjustSlateTime(key,delta,e){
+  e.stopPropagation();
+  if(key==='bfRelative') return; // breakfast is implicitly wake+1h
+  if(!key||!S[key]) return;
+  const ns=((timeToSlot(S[key])+delta)+96)%96;
+  S[key]=slotToHHMM(ns);
+  const inp=document.getElementById('t-ex');
+  if(key==='exerciseTime'&&inp) inp.value=S[key];
+  refresh();
+}
+
+function skipMeal(mealId,e){
+  e.stopPropagation();
+  S.skipped[mealId]=!S.skipped[mealId];
+  refresh();
+}
+
+// ═══ DAY SUMMARY ═══
+function updateDaySummary(){
+  if(!arcData.length) arcData=buildArc();
+  // Only average the active (daytime) portion — exclude last 2h before bed
+  const wakeS=timeToSlot(S.wakeTime),bedS=timeToSlot(S.bedTime);
+  const adjBed=bedS<=wakeS?bedS+96:bedS;
+  const activeData=arcData.filter(d=>d.s<adjBed-8);
+  const avg=activeData.length?Math.round(activeData.reduce((s,d)=>s+d.val,0)/activeData.length):50;
+  const band=getBand(avg);
+  const el=document.getElementById('daySumBand'),desc=document.getElementById('daySumDesc');
+  el.textContent=band.label+' day ahead'; el.style.color=band.color;
+  let txt='';
+  if(S.sleep==='poor') txt='Poor sleep is the main variable. Protein early, manage appetite.';
+  else if(S.exercise==='endurance') txt='Endurance session — fuelling is the critical variable.';
+  else if(S.tonight==='party') txt='Big night ahead. Eat well before you go.';
+  else if(band.label==='Strong') txt='Good inputs. Peak window arrives early — protect it.';
+  else if(band.label==='Solid') txt='Solid arc. Hold the sequence through the afternoon.';
+  else if(band.label==='Moderate') txt='The post-lunch walk is your biggest lever today.';
+  else txt='Recovery fundamentals — protein, light movement, sleep tonight.';
+  desc.textContent=txt;
+}
+
+function refresh(){ arcData=buildArc(); renderSlates(); }
+
+// ═══ SVG HELPERS ═══
+const SVG_NS='http://www.w3.org/2000/svg';
+function svgEl(tag,attrs){ const e=document.createElementNS(SVG_NS,tag); for(const[k,v] of Object.entries(attrs)) e.setAttribute(k,v); return e; }
+
+function polyPath(data,x0,x1,y0,y1){
+  const n=data.length-1;
+  return data.map((v,i)=>{
+    const x=x0+(i/n)*(x1-x0);
+    const y=y0+(y1-y0)*(1-Math.max(10,Math.min(100,v))/100);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+}
+
+function drawCurve(svg,data,x0,x1,y0,y1,color,dashed,width){
+  const attrs={points:polyPath(data,x0,x1,y0,y1),fill:'none',stroke:color,'stroke-width':width||'2','stroke-linejoin':'round','stroke-linecap':'round'};
+  if(dashed) attrs['stroke-dasharray']='5,4';
+  svg.appendChild(svgEl('polyline',attrs));
+}
+
+function drawMealMarkers(svg,mealSlots,totalSlots,x0,x1,y0,y1){
+  // mealSlots: [{pos, label}] where pos is index in total array
+  mealSlots.forEach(({pos,label})=>{
+    const x=x0+(pos/totalSlots)*(x1-x0);
+    svg.appendChild(svgEl('line',{x1:x,x2:x,y1:y0,y2:y1,stroke:'rgba(232,227,216,.18)','stroke-width':'1','stroke-dasharray':'2,3'}));
+    const t=svgEl('text',{x:x+2,y:y0+8,fill:'rgba(168,162,150,.55)','font-size':'7.5','font-family':'DM Sans','font-weight':'700'});
+    t.textContent=label; svg.appendChild(t);
+  });
+}
+
+function makeLegend(containerId, items){
+  // items: [{color, dashed, label}]
+  const el=document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML='';
+  items.forEach(({color,dashed,label})=>{
+    const wrap=document.createElement('div');
+    wrap.className='arc-leg-item';
+    const lineSVG=document.createElementNS(SVG_NS,'svg');
+    lineSVG.setAttribute('width','22'); lineSVG.setAttribute('height','8');
+    lineSVG.setAttribute('viewBox','0 0 22 8');
+    const ln=document.createElementNS(SVG_NS,'line');
+    ln.setAttribute('x1','0'); ln.setAttribute('y1','4'); ln.setAttribute('x2','22'); ln.setAttribute('y2','4');
+    ln.setAttribute('stroke',color); ln.setAttribute('stroke-width','2');
+    if(dashed) ln.setAttribute('stroke-dasharray','5,3');
+    lineSVG.appendChild(ln);
+    const span=document.createElement('span');
+    span.textContent=label;
+    wrap.appendChild(lineSVG); wrap.appendChild(span);
+    el.appendChild(wrap);
+  });
+}
+
+// ═══ RENDER LEARN ARCS ═══
+function renderBaseArc(){
+  const svg=document.getElementById('baseArcSVG');
+  if(!svg) return;
+  svg.innerHTML='';
+  const x0=8,x1=322,y0=8,y1=70;
+  const data=EDU.natural; // 66 points
+  const n=data.length-1;
+
+  // Slow zone background shade (slots 24-36 = 6h to 9h after wake ~ 1pm to 4pm area)
+  const sxFrom=x0+(24/n)*(x1-x0), sxTo=x0+(36/n)*(x1-x0);
+  svg.appendChild(svgEl('rect',{x:sxFrom,width:sxTo-sxFrom,y:y0,height:y1-y0,fill:'rgba(212,146,58,.08)',rx:'2'}));
+
+  // Fill under curve
+  const pts=polyPath(data,x0,x1,y0,y1);
+  svg.appendChild(svgEl('path',{d:`M${pts.split(' ')[0]} L${pts} L${x1},${y1} L${x0},${y1} Z`,fill:'rgba(91,156,246,.07)'}));
+
+  // Curve
+  drawCurve(svg,data,x0,x1,y0,y1,'#5B9CF6',false,2.2);
+
+  // Meal markers: B at slot 4, L at slot 20, D at slot 52
+  drawMealMarkers(svg,[{pos:4,label:'B'},{pos:20,label:'L'},{pos:52,label:'D'}],n,x0,x1,y0,y1);
+
+  // Zone labels
+  const zoneLabels=[
+    [6,'Morning peak','#4EAF68'],
+    [28,'Natural slow zone','#D4923A'],
+    [42,'Afternoon lift','#7EC87D']
+  ];
+  zoneLabels.forEach(([slot,txt,col])=>{
+    const x=x0+(slot/n)*(x1-x0);
+    const v=data[Math.min(slot,n)];
+    const y=y0+(y1-y0)*(1-v/100)-8;
+    const t=svgEl('text',{x,y:Math.max(y0+8,y),'text-anchor':'middle',fill:col,'font-size':'8.5','font-family':'DM Sans','font-weight':'700',opacity:'.8'});
+    t.textContent=txt; svg.appendChild(t);
+  });
+
+  // B L D labels below x-axis
+  [{pos:4,t:'B'},{pos:20,t:'L'},{pos:52,t:'D'}].forEach(({pos,t})=>{});
+
+  // Time axis
+  const times=[{pos:0,t:'7am'},{pos:20,t:'Noon'},{pos:40,t:'4pm'},{pos:60,t:'10pm'}];
+  times.forEach(({pos,t})=>{
+    const x=x0+(pos/n)*(x1-x0);
+    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(104,104,96,.7)','font-size':'7.5','font-family':'DM Sans'});
+    tx.textContent=t; svg.appendChild(tx);
+  });
+}
+
+function renderCompArc(){
+  const svg=document.getElementById('compArcSVG');
+  if(!svg) return;
+  svg.innerHTML='';
+  const x0=8,x1=322,y0=8,y1=70;
+  const good=EDU.goodSleep, poor=EDU.poorSleep;
+  const n=good.length-1;
+
+  // Gap fill
+  const goodPts=good.map((v,i)=>({x:(x0+(i/n)*(x1-x0)).toFixed(1),y:(y0+(y1-y0)*(1-v/100)).toFixed(1)}));
+  const poorPts=poor.map((v,i)=>({x:(x0+(i/n)*(x1-x0)).toFixed(1),y:(y0+(y1-y0)*(1-v/100)).toFixed(1)}));
+  svg.appendChild(svgEl('path',{d:`M${goodPts.map(p=>`${p.x},${p.y}`).join(' L')} L${poorPts.slice().reverse().map(p=>`${p.x},${p.y}`).join(' L')} Z`,fill:'rgba(255,255,255,.04)'}));
+
+  // Curves
+  drawCurve(svg,poor,x0,x1,y0,y1,'#C44848',true,1.8);
+  drawCurve(svg,good,x0,x1,y0,y1,'#4EAF68',false,2.2);
+
+  // Meal markers
+  drawMealMarkers(svg,[{pos:4,label:'B'},{pos:20,label:'L'},{pos:48,label:'D'}],n,x0,x1,y0,y1);
+
+  // Gap label
+  const midX=(x0+x1)/2, midGY=y0+(y1-y0)*(1-good[30]/100), midPY=y0+(y1-y0)*(1-poor[30]/100);
+  const t=svgEl('text',{x:midX,y:(midGY+midPY)/2,'text-anchor':'middle',fill:'rgba(168,162,150,.55)','font-size':'7.5','font-family':'DM Sans','font-weight':'700'});
+  t.textContent='this gap is yours to control'; svg.appendChild(t);
+
+  // Time axis
+  [{pos:0,t:'7am'},{pos:20,t:'Noon'},{pos:40,t:'4pm'},{pos:56,t:'9pm'}].forEach(({pos,t})=>{
+    const x=x0+(pos/n)*(x1-x0);
+    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(104,104,96,.7)','font-size':'7.5','font-family':'DM Sans'});
+    tx.textContent=t; svg.appendChild(tx);
+  });
+
+  makeLegend('compLegend',[
+    {color:'#4EAF68',dashed:false,label:'Good sleep, protein-first, post-lunch walk'},
+    {color:'#C44848',dashed:true, label:'Poor sleep, carb-heavy, no walk'}
+  ]);
+}
+
+function renderMiniArc(svgId, data1, data2, col1, col2, mealPosArr, timeLabels){
+  const svg=document.getElementById(svgId);
+  if(!svg) return;
+  svg.innerHTML='';
+  const x0=6,x1=294,y0=6,y1=42;
+  const n=data1.length-1;
+
+  // Gridlines (light)
+  [25,50,75].forEach(v=>{
+    const y=y0+(y1-y0)*(1-v/100);
+    svg.appendChild(svgEl('line',{x1:x0,x2:x1,y1:y,y2:y,stroke:'rgba(255,255,255,.05)','stroke-width':'1'}));
+  });
+
+  // Curves
+  drawCurve(svg,data1,x0,x1,y0,y1,col1,true,1.8); // worse = dashed
+  drawCurve(svg,data2,x0,x1,y0,y1,col2,false,2.1); // better = solid
+
+  // Meal markers
+  if(mealPosArr) drawMealMarkers(svg,mealPosArr,n,x0,x1,y0,y1);
+
+  // Time labels
+  if(timeLabels){
+    timeLabels.forEach(({pos,t})=>{
+      const x=x0+(pos/n)*(x1-x0);
+      const tx=svgEl('text',{x,y:y1+10,'text-anchor':pos===0?'start':pos===n?'end':'middle',fill:'rgba(104,104,96,.7)','font-size':'7','font-family':'DM Sans'});
+      tx.textContent=t; svg.appendChild(tx);
+    });
+  }
+}
+
+function renderLearnArcs(){
+  renderBaseArc();
+  renderCompArc();
+
+  // Walk: 5h around lunch, B marker at left if visible
+  renderMiniArc('walkArcSVG', EDU.noWalk, EDU.walk, '#C44848','#4EAF68',
+    [{pos:0,label:'L'}],
+    [{pos:0,t:'Lunch'},{pos:10,t:'2hrs'},{pos:20,t:'4hrs'}]
+  );
+  makeLegend('walkLegend',[
+    {color:'#C44848',dashed:true, label:'No walk after eating'},
+    {color:'#4EAF68',dashed:false,label:'10-min walk after eating'}
+  ]);
+
+  // Sequence: 4h from meal start
+  renderMiniArc('seqArcSVG', EDU.carbFirst, EDU.protFirst,'#C44848','#4EAF68',
+    [{pos:0,label:'Meal'}],
+    [{pos:0,t:'Meal'},{pos:8,t:'2hrs'},{pos:16,t:'4hrs'}]
+  );
+  makeLegend('seqLegend',[
+    {color:'#C44848',dashed:true, label:'Carbs eaten first'},
+    {color:'#4EAF68',dashed:false,label:'Protein eaten first'}
+  ]);
+
+  // Sleep: full 14h day, 3 meal markers
+  renderMiniArc('sleepArcSVG', EDU.poorSleep, EDU.goodSleep,'#C44848','#4EAF68',
+    [{pos:4,label:'B'},{pos:20,label:'L'},{pos:48,label:'D'}],
+    [{pos:0,t:'7am'},{pos:28,t:'2pm'},{pos:56,t:'9pm'}]
+  );
+  makeLegend('sleepLegend',[
+    {color:'#C44848',dashed:true, label:'Poor sleep night before'},
+    {color:'#4EAF68',dashed:false,label:'Good sleep night before'}
+  ]);
+
+  // Chronotype: same clock, 14h day, meal markers at same positions
+  renderMiniArc('ctypeArcSVG', EDU.eveType, EDU.mornType,'#D4923A','#5B9CF6',
+    [{pos:4,label:'B'},{pos:20,label:'L'},{pos:48,label:'D'}],
+    [{pos:0,t:'7am'},{pos:14,t:'10:30'},{pos:28,t:'2pm'},{pos:56,t:'9pm'}]
+  );
+  makeLegend('ctypeLegend',[
+    {color:'#D4923A',dashed:true, label:'Evening type (forced 7am start)'},
+    {color:'#5B9CF6',dashed:false,label:'Morning type (natural 7am start)'}
+  ]);
+}
+
+// ═══ INPUT HANDLERS ═══
+const SLEEP_S=['good','ok','poor'],FEEL_S=['good','ok','low'],STRESS_S=['none','mild','high'],EX_S=['off','walk','longwalk','workout','endurance'],CTX_S=['desk','home','travel'],TON_S=['normal','out','party','early'];
+
+function toggleChrono(){
+  S.chronotype=S.chronotype==='morning'?'evening':'morning';
+  const btn=document.getElementById('chronoToggle');
+  const isMorn=S.chronotype==='morning';
+  btn.textContent=isMorn?'Morning ⇄':'Evening ⇄';
+  btn.className='chrono-toggle'+(isMorn?'':' eve');
+  S.lunchTime=isMorn?'12:30':'13:15';
+  S.dinnerTime=isMorn?'19:00':'19:30';
+  refresh();
+}
+
+function cycleSleep(){ S.sleep=SLEEP_S[(SLEEP_S.indexOf(S.sleep)+1)%SLEEP_S.length]; syncSleepUI(); refresh(); }
+function syncSleepUI(){
+  const m={good:'cg',ok:'ca',poor:'cr'},l={good:'😴 Good',ok:'🧡 OK',poor:'😞 Poor'};
+  document.getElementById('chip-sl').className=`chip ${m[S.sleep]}`;
+  document.getElementById('chip-sl').textContent=l[S.sleep];
+}
+
+function cycleFeel(){ S.feel=FEEL_S[(FEEL_S.indexOf(S.feel)+1)%FEEL_S.length]; syncFeelUI(); refresh(); }
+function syncFeelUI(){
+  const m={good:'cg',ok:'ca',low:'cr'},l={good:'⚡ Good',ok:'😐 OK',low:'🔋 Low'};
+  document.getElementById('chip-feel').className=`chip ${m[S.feel]}`;
+  document.getElementById('chip-feel').textContent=l[S.feel];
+}
+
+function cycleStress(){ S.stress=STRESS_S[(STRESS_S.indexOf(S.stress)+1)%STRESS_S.length]; syncStressUI(); refresh(); }
+function cycleStressChip(){ cycleStress(); }
+function syncStressUI(){
+  const chip=document.getElementById('chip-stress');
+  const m={none:'',mild:'ca',high:'cr'},l={none:'Stress',mild:'Mild',high:'High stress'};
+  chip.className=`chip ${m[S.stress]}`;
+  chip.textContent=l[S.stress];
+}
+
+function cycleExercise(){ S.exercise=EX_S[(EX_S.indexOf(S.exercise)+1)%EX_S.length]; syncExUI(); refresh(); }
+function syncExUI(){
+  const l={off:'Off',walk:'Walk',longwalk:'Long walk',workout:'Workout',endurance:'Endurance'};
+  const chip=document.getElementById('chip-ex');
+  chip.textContent=l[S.exercise];
+  chip.className=`chip ${S.exercise!=='off'?'cg':''}`;
+  const exRow=document.getElementById('exTimeRow');
+  if(exRow) exRow.className='setup-extime'+(S.exercise!=='off'?' on':'');
+  // Auto-seed walk time to lunch+15min
+  if((S.exercise==='walk'||S.exercise==='longwalk')&&S.exerciseTime==='08:00'){
+    const lunchSlot=timeToSlot(S.lunchTime);
+    S.exerciseTime=slotToHHMM((lunchSlot+1)%96);
+    const inp=document.getElementById('t-ex'); if(inp) inp.value=S.exerciseTime;
+  }
+}
+
+function toggleFasting(){
+  S.fasting=!S.fasting;
+  const chip=document.getElementById('chip-fast');
+  chip.className=`chip ${S.fasting?'cc':''}`;
+  chip.textContent='IF';
+  refresh();
+}
+
+function cycleContext(){ S.context=CTX_S[(CTX_S.indexOf(S.context)+1)%CTX_S.length]; syncCtxUI(); refresh(); }
+function syncCtxUI(){
+  const l={desk:'Work',home:'Home',travel:'Travel'};
+  const chip=document.getElementById('chip-ctx');
+  chip.textContent=l[S.context]; chip.className='chip cc';
+}
+
+function cycleTonightChip(){ S.tonight=TON_S[(TON_S.indexOf(S.tonight)+1)%TON_S.length]; syncTonUI(); refresh(); }
+function syncTonUI(){
+  const l={normal:'Normal',out:'Out',party:'Party',early:'Early'};
+  const m={normal:'',out:'cc',party:'ca',early:'cg'};
+  const chip=document.getElementById('chip-ton');
+  chip.textContent=l[S.tonight]; chip.className=`chip ${m[S.tonight]}`;
+}
+
+function onInputChange(){
+  const exInp=document.getElementById('t-ex');
+  if(exInp&&exInp.value) S.exerciseTime=exInp.value;
+  refresh();
+}
+
+// ═══ DEEPER TOGGLE ═══
+function toggleDeeper(){
+  const c=document.getElementById('deeperCards'),chev=document.getElementById('deeperChevron');
+  const on=c.classList.toggle('on'); chev.classList.toggle('on',on);
+}
+
+// ═══ TAB NAV ═══
+function showTab(tab){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(n=>n.classList.remove('on'));
+  document.getElementById(`s-${tab}`).classList.add('on');
+  document.getElementById(`nb-${tab}`).classList.add('on');
+  if(tab==='learn') renderLearnArcs();
+}
+
+// ═══ INIT ═══
+function init(){
+  const d=new Date(),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('hdrDate').textContent=`${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+  syncSleepUI(); syncFeelUI(); syncStressUI(); syncExUI(); syncCtxUI(); syncTonUI();
+  refresh();
+  setInterval(()=>{ arcData=[]; refresh(); },300000);
+}
+
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

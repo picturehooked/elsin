@@ -31,7 +31,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .scr.on{display:block}
 
 /* ── SETUP STRIP ── */
-.setup{background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:57px;z-index:90;padding:0 14px 8px}
+.setup{background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:0;z-index:90;padding:0 14px 8px}
 .chip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;align-items:start}
 .chrono-toggle{font-size:.64rem;font-weight:700;padding:5px 3px;border-radius:13px;border:1px solid var(--gr);background:var(--gbg);color:var(--gr);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;font-family:'DM Sans',sans-serif;transition:all .18s;-webkit-appearance:none;letter-spacing:.01em;text-align:center}
 .chrono-toggle.eve{border-color:var(--ac);background:var(--cbg);color:var(--ac)}
@@ -80,7 +80,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .adj-btn:hover{color:var(--ac);border-color:var(--ac)}
 .slate-chevron{font-size:.72rem;color:var(--tx3);transition:transform .2s;margin-top:2px}
 .slate.open .slate-chevron{transform:rotate(90deg)}
-.skip-btn{position:absolute;top:5px;right:5px;width:18px;height:18px;border-radius:50%;background:var(--sf2);border:1px solid var(--br);color:var(--tx3);font-size:.62rem;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;font-family:'DM Sans',sans-serif;transition:all .15s;z-index:2;line-height:1}
+.skip-btn{position:absolute;bottom:5px;right:5px;width:18px;height:18px;border-radius:50%;background:var(--sf2);border:1px solid var(--br);color:var(--tx3);font-size:.62rem;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;font-family:'DM Sans',sans-serif;transition:all .15s;z-index:2;line-height:1}
 .skip-btn:hover{color:var(--am);border-color:var(--am)}
 .skip-btn.on{background:var(--abg);border-color:var(--am);color:var(--am)}
 .slate-detail{display:none;background:var(--bg2);border:1px solid var(--br);border-top:none;border-radius:0 0 10px 10px;padding:12px 14px;margin:0 14px 6px}
@@ -191,7 +191,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       <div class="day-sum-desc" id="daySumDesc">Good inputs. Peak window arrives early.</div>
     </div>
     <div class="chip-grid">
-      <button class="chip cg" id="chip-sl" onclick="cycleSleep()">😴 Good</button>
+      <button class="chip cg" id="chip-sl" onclick="cycleSleep()">Sleep 👍</button>
       <button class="chrono-toggle" id="chronoToggle" onclick="toggleChrono()">Early Bird ⇄</button>
       <button class="chip cg" id="chip-feel" onclick="cycleFeel()">⚡ Good</button>
       <button class="chip" id="chip-stress" onclick="cycleStressChip()">Stress</button>
@@ -226,7 +226,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       <div class="arc-edu-svg-pad">
         <svg id="baseArcSVG" viewBox="0 0 330 90" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%"></svg>
       </div>
-      <div class="arc-edu-note"><strong>The slow zone in the early afternoon is built into human biology.</strong> It happens regardless of what you eat or how well you slept. The depth is what varies. The goal is not to eliminate it — it's to manage how deep it goes and plan around it.</div>
+      <div class="arc-edu-note"><strong>The afternoon lull is built into human biology.</strong> It happens regardless of what you eat or how well you slept. The depth is what varies. The goal is not to eliminate it — it's to manage how deep it goes and plan around it.</div>
     </div>
   </div>
 
@@ -309,7 +309,7 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
     <div class="bcard">
       <div class="bcard-top">
         <div class="bcard-tag">CHRONOTYPE</div>
-        <div class="bcard-title">Your slow zone isn't at 2pm if you're an evening type</div>
+        <div class="bcard-title">Your afternoon lull isn't at 2pm if you're an evening type</div>
         <div class="bcard-delta">Optimal window: <span>shifts 1.5–2 hours later</span></div>
       </div>
       <div class="bcard-arc-wrap">
@@ -319,8 +319,8 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
         <div class="bcard-legend" id="ctypeLegend"></div>
       </div>
       <div class="bcard-body">
-        <p>Morning types peak early. Evening types forced to a 7am start are operating under social jet lag — their body clock says it's still 5:30am. They're sluggish in the morning, peak later, and their slow zone falls at 3–4pm, not 2pm. Knowing your type means knowing when to schedule hard work and when to protect the slow window.</p>
-        <div class="bcard-pull">"That 3pm meeting you dread? It may be your biological low — not a motivation problem."</div>
+        <p>Morning types peak early. Evening types forced to a 7am start are operating under social jet lag — their body clock says it's still 5:30am. They're sluggish in the morning, peak later, and their afternoon lull falls at 3–4pm, not 2pm. Knowing your type means knowing when to schedule hard work and when to protect that window.</p>
+        <div class="bcard-pull">"That 3pm meeting you dread? It may be your biological afternoon lull — not a motivation problem."</div>
       </div>
     </div>
 
@@ -338,8 +338,9 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
         <div class="bcard-legend" id="exerciseLegend"></div>
       </div>
       <div class="bcard-body">
-        <p>A structured workout — separate from the post-meal walk — produces a metabolic lift that runs for 90–120 minutes after you finish. The effect is strong enough to flatten or eliminate the afternoon slow zone entirely on good workout days.</p>
+        <p>A structured workout — separate from the post-meal walk — produces a metabolic lift that runs for 90–120 minutes after you finish. The effect is strong enough to flatten or eliminate the afternoon lull entirely on good workout days.</p>
         <p>This is not the same mechanism as the post-meal walk. The walk redirects meal energy. The workout raises your metabolic baseline and shifts your energy ceiling upward for hours.</p>
+        <p>Fuelling applies before and during, not just after. Energy is best topped up before it is consumed — arriving depleted and trying to recover mid-session costs more performance than it saves. A small carb intake 30–45 minutes before a session avoids the gap. For sessions over 60 minutes, 20–30g of fast carbs mid-session (banana, dates, a gel) before you feel the drop maintains output and reduces the recovery cost afterwards.</p>
         <div class="bcard-pull">"The workout doesn't happen at the gym. It happens in the two hours after."</div>
       </div>
     </div>
@@ -354,7 +355,8 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
       <div class="bcard-body">
         <p>Ultra-processed foods drive excess intake through three mechanisms: they disrupt satiety signals, deliver calories faster than the body can register them, and are engineered to override fullness. In controlled conditions, this adds around 500 extra calories per day — consumed without noticing.</p>
         <p>No timing strategy compensates for this. Eating protein-first out of ultra-processed food delivers a fraction of the benefit of doing it with real food. Composition is the first-order lever. Everything else optimises around it.</p>
-        <p><strong>The practical rule:</strong> default to food that looks like what it was made from. The less processing between field and plate, the better your satiety signals work and the more your arc responds to what you eat.</p>
+        <p><strong>Ultra-processed in practice:</strong> anything with more than five ingredients you couldn't buy separately — packaged snacks (crisps, biscuits, cereal bars), most breakfast cereals, flavoured yoghurts, ready meals, processed meats (sausages, deli slices), soft drinks, and most fast food. The defining feature is not fat, sugar, or carbs in isolation. It is industrial reformulation that strips food of its satiety-signalling properties.</p>
+        <p><strong>Real food:</strong> meat, fish, eggs, full-fat dairy, vegetables, fruit, legumes, whole grains, nuts — and anything you could make from those ingredients at home. These are the foods whose satiety signals work as intended. The arc responds to them.</p>
         <div class="bcard-pull">"Timing a poor-quality meal is rearranging furniture in the wrong house."</div>
       </div>
     </div>
@@ -652,12 +654,13 @@ function buildSlates(){
       slot:exS, type:'exercise', mealId:'', tag:'',
       label:exLabel,
       action:isHighStressIntense?'High stress today — consider dialling back intensity.':
-             S.exercise==='endurance'?'Endurance session — carbs essential today. Small portion 30 min before.':
+             S.exercise==='endurance'?'Fuel before depletion, not after. Carbs 30–45 min before and every 45–60 min during.':
              isWalkExercise?'Walk after eating — moves energy to muscles, reduces post-meal dip by 40%.':
-             'Hydrate now. Recovery nutrition — protein first, then some carbs within 30 min.',
+             'Fuel before you need it. Recovery nutrition — protein first, then carbs within 30 min after.',
       detail:isHighStressIntense?'Low-to-moderate intensity is the evidence-supported dose under stress — it lifts energy and reduces fatigue without compounding cortisol load.':
              isWalkExercise?'Walking within 20 minutes of a meal is one of the highest-leverage actions you can take. It redirects glucose to muscle uptake, reducing the post-meal dip by up to 40%.':
-             'A workout at this point gives you an energy lift that runs for 90–120 minutes. Recovery nutrition within 30 minutes is the most productive intake of your day. Protein first: eggs, Greek yoghurt, chicken, salmon, or a shake. Add some carbs if the session was intense — rice, oats, or fruit alongside.',
+             S.exercise==='endurance'?'Endurance sessions deplete glycogen progressively. The principle: top up before you\'ve consumed it, not after you\'ve run out. Before: carbs 30–45 minutes prior — banana, oats, toast, or a small rice cake. During sessions longer than 75 minutes: 20–40g fast carbs every 45–60 minutes — banana, dates, or a gel. Do not wait until you feel the drop. Recovery: carbs and protein within 30 minutes of finishing to replenish glycogen and start adaptation.':
+             'Fuel before you need it, not after you\'ve hit empty. If training within 2 hours of a meal, you\'re covered. If fasted or more than 3 hours since eating, a small carb snack 30–45 minutes before delivers more than trying to recover depleted performance mid-session. During sessions under 60 minutes, water only is fine. Above 60 minutes: 20–30g of fast carbs mid-session before you feel the drop — banana, a few dates, or dried fruit. Recovery nutrition within 30 minutes after: protein first, then some carbs.',
       adjustable:true, mealKey:'exerciseTime'
     });
   }
@@ -679,7 +682,7 @@ function buildSlates(){
   // Slow zone
   events.push({
     slot:slowFrom, type:'slow', mealId:'', tag:slowExerciseHelping?'':'slow',
-    label:slowExerciseHelping?'Slow zone — exercise is helping':slowAvg<45?'Natural slow zone':'Slow zone — managed',
+    label:slowExerciseHelping?'Afternoon lull — exercise is helping':slowAvg<45?'Natural afternoon lull':'Afternoon lull — managed',
     action:slowExerciseHelping?'Exercise has raised your floor here. Energy is higher than expected for this window.':
            'This dip is biological — everyone has it. Plan low-demand work, admin, or a short rest here.',
     detail:slowExerciseHelping?'The workout has lifted your energy through what would otherwise be the deepest part of the day. Use this window for work that normally suffers in the afternoon.':
@@ -775,7 +778,7 @@ function renderSlates(){
     // Tags
     let tagHtml='';
     if(sl.isNow) tagHtml+='<span class="slate-tag tag-now">NOW</span>';
-    if(sl.tag==='slow'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-slow">NATURAL DIP</span>';
+    if(sl.tag==='slow'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-slow">AFTERNOON LULL</span>';
     if(sl.tag==='peak'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-peak">PEAK</span>';
     if(sl.tag==='rest'&&!sl.isNow) tagHtml+='<span class="slate-tag tag-rest">REST</span>';
 
@@ -901,7 +904,7 @@ function drawMealMarkers(svg,mealSlots,totalSlots,x0,x1,y0,y1){
   mealSlots.forEach(({pos,label})=>{
     const x=x0+(pos/totalSlots)*(x1-x0);
     svg.appendChild(svgEl('line',{x1:x,x2:x,y1:y0,y2:y1,stroke:'rgba(232,227,216,.18)','stroke-width':'1','stroke-dasharray':'2,3'}));
-    const t=svgEl('text',{x:x+2,y:y0+8,fill:'rgba(168,162,150,.55)','font-size':'7.5','font-family':'DM Sans','font-weight':'700'});
+    const t=svgEl('text',{x:x+2,y:y0+8,fill:'rgba(168,162,150,.75)','font-size':'8.5','font-family':'DM Sans','font-weight':'700'});
     t.textContent=label; svg.appendChild(t);
   });
 }
@@ -955,7 +958,7 @@ function renderBaseArc(){
   // Zone labels
   const zoneLabels=[
     [6,'Morning peak','#4EAF68'],
-    [28,'Natural slow zone','#D4923A'],
+    [28,'Afternoon lull','#D4923A'],
     [42,'Afternoon lift','#7EC87D']
   ];
   zoneLabels.forEach(([slot,txt,col])=>{
@@ -973,7 +976,7 @@ function renderBaseArc(){
   const times=[{pos:0,t:'7am'},{pos:20,t:'Noon'},{pos:40,t:'4pm'},{pos:60,t:'10pm'}];
   times.forEach(({pos,t})=>{
     const x=x0+(pos/n)*(x1-x0);
-    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(104,104,96,.7)','font-size':'7.5','font-family':'DM Sans'});
+    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(168,162,150,.9)','font-size':'9','font-family':'DM Sans'});
     tx.textContent=t; svg.appendChild(tx);
   });
 }
@@ -1000,13 +1003,13 @@ function renderCompArc(){
 
   // Gap label
   const midX=(x0+x1)/2, midGY=y0+(y1-y0)*(1-good[30]/100), midPY=y0+(y1-y0)*(1-poor[30]/100);
-  const t=svgEl('text',{x:midX,y:(midGY+midPY)/2,'text-anchor':'middle',fill:'rgba(168,162,150,.55)','font-size':'7.5','font-family':'DM Sans','font-weight':'700'});
+  const t=svgEl('text',{x:midX,y:(midGY+midPY)/2,'text-anchor':'middle',fill:'rgba(168,162,150,.75)','font-size':'8.5','font-family':'DM Sans','font-weight':'700'});
   t.textContent='this gap is yours to control'; svg.appendChild(t);
 
   // Time axis
   [{pos:0,t:'7am'},{pos:20,t:'Noon'},{pos:40,t:'4pm'},{pos:56,t:'9pm'}].forEach(({pos,t})=>{
     const x=x0+(pos/n)*(x1-x0);
-    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(104,104,96,.7)','font-size':'7.5','font-family':'DM Sans'});
+    const tx=svgEl('text',{x,y:y1+10,'text-anchor':'middle',fill:'rgba(168,162,150,.9)','font-size':'9','font-family':'DM Sans'});
     tx.textContent=t; svg.appendChild(tx);
   });
 
@@ -1040,7 +1043,7 @@ function renderMiniArc(svgId, data1, data2, col1, col2, mealPosArr, timeLabels){
   if(timeLabels){
     timeLabels.forEach(({pos,t})=>{
       const x=x0+(pos/n)*(x1-x0);
-      const tx=svgEl('text',{x,y:y1+10,'text-anchor':pos===0?'start':pos===n?'end':'middle',fill:'rgba(104,104,96,.7)','font-size':'7','font-family':'DM Sans'});
+      const tx=svgEl('text',{x,y:y1+10,'text-anchor':pos===0?'start':pos===n?'end':'middle',fill:'rgba(168,162,150,.9)','font-size':'9','font-family':'DM Sans'});
       tx.textContent=t; svg.appendChild(tx);
     });
   }
@@ -1117,7 +1120,7 @@ function toggleChrono(){
 
 function cycleSleep(){ S.sleep=SLEEP_S[(SLEEP_S.indexOf(S.sleep)+1)%SLEEP_S.length]; syncSleepUI(); refresh(); }
 function syncSleepUI(){
-  const m={good:'cg',ok:'ca',poor:'cr'},l={good:'😴 Good',ok:'🧡 OK',poor:'😞 Poor'};
+  const m={good:'cg',ok:'ca',poor:'cr'},l={good:'Sleep 👍',ok:'Sleep OK',poor:'Sleep 👎'};
   document.getElementById('chip-sl').className=`chip ${m[S.sleep]}`;
   document.getElementById('chip-sl').textContent=l[S.sleep];
 }

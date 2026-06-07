@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Elsin</title>
+<link rel="icon" type="image/png" href="ElsinButtonv2.png">
+<link rel="apple-touch-icon" href="ElsinButtonv2.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -29,25 +31,23 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .scr.on{display:block}
 
 /* ── SETUP STRIP ── */
-.setup{background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:57px;z-index:90;padding:8px 14px 6px}
-.setup-row1{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
-.chrono-toggle{font-size:.72rem;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid var(--gr);background:var(--gbg);color:var(--gr);cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:'DM Sans',sans-serif;transition:all .18s;-webkit-appearance:none;letter-spacing:.02em}
+.setup{background:var(--bg);border-bottom:1px solid var(--br);position:sticky;top:57px;z-index:90;padding:0 14px 8px}
+.chip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;align-items:start}
+.chrono-toggle{font-size:.64rem;font-weight:700;padding:5px 3px;border-radius:13px;border:1px solid var(--gr);background:var(--gbg);color:var(--gr);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;font-family:'DM Sans',sans-serif;transition:all .18s;-webkit-appearance:none;letter-spacing:.01em;text-align:center}
 .chrono-toggle.eve{border-color:var(--ac);background:var(--cbg);color:var(--ac)}
-.setup-chips{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;flex:1}
-.setup-chips::-webkit-scrollbar{display:none}
-.chip{font-size:.68rem;font-weight:600;padding:3px 9px;border-radius:13px;border:1px solid var(--br);background:var(--sf);color:var(--tx2);white-space:nowrap;cursor:pointer;transition:all .18s;-webkit-appearance:none;flex-shrink:0;font-family:'DM Sans',sans-serif}
+.chip{font-size:.64rem;font-weight:600;padding:5px 3px;border-radius:13px;border:1px solid var(--br);background:var(--sf);color:var(--tx2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:all .18s;-webkit-appearance:none;width:100%;text-align:center;font-family:'DM Sans',sans-serif}
 .chip.cg{border-color:var(--gr);color:var(--gr);background:var(--gbg)}
 .chip.ca{border-color:var(--am);color:var(--am);background:var(--abg)}
 .chip.cr{border-color:var(--rd);color:var(--rd);background:var(--rbg)}
 .chip.cc{border-color:var(--ac);color:var(--ac);background:var(--cbg)}
-.setup-extime{display:none;align-items:center;gap:8px;padding-top:6px}
-.setup-extime.on{display:flex}
-.tin-lbl{font-size:.66rem;color:var(--tx3)}
-.tin{background:var(--sf);border:1px solid var(--br);border-radius:7px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.76rem;padding:4px 9px;outline:none;transition:border-color .2s}
+.chip-ex-wrap{display:flex;flex-direction:column;gap:3px}
+.setup-extime{display:none}
+.setup-extime.on{display:flex;flex-direction:column;gap:2px}
+.tin{background:var(--sf);border:1px solid var(--br);border-radius:7px;color:var(--tx);font-family:'DM Sans',sans-serif;font-size:.7rem;padding:3px 6px;outline:none;transition:border-color .2s;width:100%;text-align:center}
 .tin:focus{border-color:var(--ac)}
 
 /* ── DAY SUMMARY ── */
-.day-sum{display:flex;align-items:center;justify-content:space-between;padding:7px 16px;background:var(--bg);border-bottom:1px solid var(--br)}
+.day-sum{display:flex;align-items:center;justify-content:space-between;padding:7px 0 6px;border-bottom:1px solid var(--br);margin-bottom:6px}
 .day-sum-band{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.08em}
 .day-sum-desc{font-size:.65rem;color:var(--tx3);text-align:right;max-width:62%;line-height:1.4}
 
@@ -186,27 +186,25 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 <section class="scr on" id="s-today">
 
   <div class="setup">
-    <div class="setup-row1">
-      <button class="chrono-toggle" id="chronoToggle" onclick="toggleChrono()">Morning ⇄</button>
-      <div class="setup-chips">
-        <button class="chip cg" id="chip-sl" onclick="cycleSleep()">😴 Good</button>
-        <button class="chip cg" id="chip-feel" onclick="cycleFeel()">⚡ Good</button>
-        <button class="chip" id="chip-ex" onclick="cycleExercise()">Off</button>
-        <button class="chip" id="chip-fast" onclick="toggleFasting()">Fasting</button>
-        <button class="chip cc" id="chip-ctx" onclick="cycleContext()">Work</button>
-        <button class="chip" id="chip-ton" onclick="cycleTonightChip()">Normal</button>
-        <button class="chip" id="chip-stress" onclick="cycleStressChip()">Stress</button>
+    <div class="day-sum" id="daySummary">
+      <div class="day-sum-band" id="daySumBand" style="color:var(--gr)">Strong day ahead</div>
+      <div class="day-sum-desc" id="daySumDesc">Good inputs. Peak window arrives early.</div>
+    </div>
+    <div class="chip-grid">
+      <button class="chip cg" id="chip-sl" onclick="cycleSleep()">😴 Good</button>
+      <button class="chrono-toggle" id="chronoToggle" onclick="toggleChrono()">Early Bird ⇄</button>
+      <button class="chip cg" id="chip-feel" onclick="cycleFeel()">⚡ Good</button>
+      <button class="chip" id="chip-stress" onclick="cycleStressChip()">Stress</button>
+      <div class="chip-ex-wrap">
+        <button class="chip" id="chip-ex" onclick="cycleExercise()">Inactive</button>
+        <div class="setup-extime" id="exTimeRow">
+          <input class="tin" type="time" id="t-ex" value="08:00" oninput="onInputChange()">
+        </div>
       </div>
+      <button class="chip" id="chip-fast" onclick="toggleFasting()">3 Meals</button>
+      <button class="chip cc" id="chip-ctx" onclick="cycleContext()">Work</button>
+      <button class="chip" id="chip-ton" onclick="cycleTonightChip()">Normal</button>
     </div>
-    <div class="setup-extime" id="exTimeRow">
-      <span class="tin-lbl">Exercise at</span>
-      <input class="tin" type="time" id="t-ex" value="08:00" oninput="onInputChange()">
-    </div>
-  </div>
-
-  <div class="day-sum" id="daySummary">
-    <div class="day-sum-band" id="daySumBand" style="color:var(--gr)">Strong day ahead</div>
-    <div class="day-sum-desc" id="daySumDesc">Good inputs. Peak window arrives early.</div>
   </div>
 
   <div class="slates-wrap" id="slatesWrap"></div>
@@ -343,6 +341,21 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
         <p>A structured workout — separate from the post-meal walk — produces a metabolic lift that runs for 90–120 minutes after you finish. The effect is strong enough to flatten or eliminate the afternoon slow zone entirely on good workout days.</p>
         <p>This is not the same mechanism as the post-meal walk. The walk redirects meal energy. The workout raises your metabolic baseline and shifts your energy ceiling upward for hours.</p>
         <div class="bcard-pull">"The workout doesn't happen at the gym. It happens in the two hours after."</div>
+      </div>
+    </div>
+
+    <!-- Ultra-processed / Composition -->
+    <div class="bcard">
+      <div class="bcard-top">
+        <div class="bcard-tag">FOOD COMPOSITION</div>
+        <div class="bcard-title">What your food is made of matters more than when you eat it</div>
+        <div class="bcard-delta">Excess intake: <span>~500 kcal/day more</span> on ultra-processed diets</div>
+      </div>
+      <div class="bcard-body">
+        <p>Ultra-processed foods drive excess intake through three mechanisms: they disrupt satiety signals, deliver calories faster than the body can register them, and are engineered to override fullness. In controlled conditions, this adds around 500 extra calories per day — consumed without noticing.</p>
+        <p>No timing strategy compensates for this. Eating protein-first out of ultra-processed food delivers a fraction of the benefit of doing it with real food. Composition is the first-order lever. Everything else optimises around it.</p>
+        <p><strong>The practical rule:</strong> default to food that looks like what it was made from. The less processing between field and plate, the better your satiety signals work and the more your arc responds to what you eat.</p>
+        <div class="bcard-pull">"Timing a poor-quality meal is rearranging furniture in the wrong house."</div>
       </div>
     </div>
 
@@ -602,7 +615,7 @@ function buildSlates(){
   const dinnerS=timeToSlot(S.dinnerTime);
   const slowFrom=lunchS+4, slowTo=lunchS+12;
   const caffCut=adjBed-32;
-  const windDown=adjBed-8;
+  const windDown=S.tonight==='party'?adjBed-4:adjBed-8;
 
   // Is post-meal walk applicable?
   const isWalkExercise=S.exercise==='walk'||S.exercise==='longwalk';
@@ -633,7 +646,7 @@ function buildSlates(){
   ];
 
   if(exS>=0){
-    const exLabel={walk:'Post-meal walk',longwalk:'Post-meal walk',workout:'Workout',endurance:'Endurance'}[S.exercise]||'Exercise';
+    const exLabel={walk:'Post-meal walk',longwalk:'Post-meal walk',workout:'Workout',endurance:'Endurance'}[S.exercise]||'Movement';
     const isHighStressIntense=S.stress==='high'&&(S.exercise==='workout'||S.exercise==='endurance');
     events.push({
       slot:exS, type:'exercise', mealId:'', tag:'',
@@ -641,21 +654,24 @@ function buildSlates(){
       action:isHighStressIntense?'High stress today — consider dialling back intensity.':
              S.exercise==='endurance'?'Endurance session — carbs essential today. Small portion 30 min before.':
              isWalkExercise?'Walk after eating — moves energy to muscles, reduces post-meal dip by 40%.':
-             'Hydrate now. Recovery meal with protein within 30 min after.',
+             'Hydrate now. Recovery nutrition — protein first, then some carbs within 30 min.',
       detail:isHighStressIntense?'Low-to-moderate intensity is the evidence-supported dose under stress — it lifts energy and reduces fatigue without compounding cortisol load.':
              isWalkExercise?'Walking within 20 minutes of a meal is one of the highest-leverage actions you can take. It redirects glucose to muscle uptake, reducing the post-meal dip by up to 40%.':
-             'A workout at this point gives you an energy lift that runs for 90–120 minutes. Recovery meal (protein + some carbs) within 30 minutes is the most productive meal of your day today.',
+             'A workout at this point gives you an energy lift that runs for 90–120 minutes. Recovery nutrition within 30 minutes is the most productive intake of your day. Protein first: eggs, Greek yoghurt, chicken, salmon, or a shake. Add some carbs if the session was intense — rice, oats, or fruit alongside.',
       adjustable:true, mealKey:'exerciseTime'
     });
   }
 
+  const isPostWorkout=(S.exercise==='workout'||S.exercise==='endurance')&&exS>=0;
   events.push({
     slot:lunchS, type:'meal', mealId:'lunch', tag:'',
-    label:lunchConflict?'Lunch (moved — workout conflict)':'Lunch',
-    action:walkNearLunch?'Protein first · walk straight after — biggest lever of the day.':
+    label:lunchConflict?'Post-workout nutrition':'Lunch',
+    action:isPostWorkout?'Post-workout window — protein first, then carbs. Best intake of the day.':
+           walkNearLunch?'Protein first · walk straight after — biggest lever of the day.':
            S.exercise!=='off'?'Protein first — eat in sequence.':
            'Protein first — eat in sequence. A 10-min walk would help if available.',
-    detail:walkNearLunch?'The post-meal walk reduces the afternoon dip by 30–40%. Eat protein-first, then walk within 20 minutes of finishing. This is the single highest-leverage action of the day.':
+    detail:isPostWorkout?'The highest-value nutrition window of your day. Within 30 minutes of finishing: 20–30g protein first — eggs, Greek yoghurt, chicken, salmon, or a protein shake. Add carbs if the session was intense: rice, oats, or fruit alongside. This replenishes glycogen, starts muscle adaptation, and recharges the arc for the afternoon. Missing this window is the single most costly nutrition mistake on workout days.':
+           walkNearLunch?'The post-meal walk reduces the afternoon dip by 30–40%. Eat protein-first, then walk within 20 minutes of finishing. This is the single highest-leverage action of the day.':
            'Protein first reduces the post-meal slump by 30–40%. The sequence matters more on days with limited movement — it\'s your main lever when a walk isn\'t happening.',
     adjustable:true, mealKey:'lunchTime'
   });
@@ -702,11 +718,12 @@ function buildSlates(){
   }
 
   // Wind down — rest mode
+  const isPartyNight=S.tonight==='party';
   events.push({
     slot:windDown, type:'wind-down', mealId:'', tag:'rest',
-    label:'Wind down',
-    action:'Low energy here is healthy and correct — your body is preparing for sleep.',
-    detail:'The natural decline toward bedtime is the intended outcome of the day. Stimulation, bright screens, and late eating delay the hormonal wind-down needed for restorative sleep. While you still have executive function, set tomorrow\'s first meal and first decision.',
+    label:isPartyNight?'Party — limit the damage':'Wind down',
+    action:isPartyNight?'Eat a proper meal before you go. Drink water between drinks.':'Low energy here is healthy and correct — your body is preparing for sleep.',
+    detail:isPartyNight?'A protein and fat meal before drinking slows alcohol absorption by 30–40% and reduces the reactive hunger that leads to poor food choices later. Alternating drinks with water reduces severity. Set an alarm for a protein-first breakfast tomorrow — sleep quality will be lower and appetite signals will be off. The goal tonight is damage limitation.':'The natural decline toward bedtime is the intended outcome of the day. Stimulation, bright screens, and late eating delay the hormonal wind-down needed for restorative sleep. While you still have executive function, set tomorrow\'s first meal and first decision.',
     adjustable:false, isRest:true
   });
 
@@ -769,8 +786,8 @@ function renderSlates(){
     // Adj buttons (meal/exercise slates only)
     const adjHtml=sl.adjustable?`
       <div class="slate-right">
-        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',2,event)" title="+30 min">▲</button>
-        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',-2,event)" title="−30 min">▼</button>
+        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',-2,event)" title="−30 min">▲</button>
+        <button class="adj-btn" onclick="adjustSlateTime('${sl.mealKey}',2,event)" title="+30 min">▼</button>
         <span class="slate-chevron" id="chev-${i}">›</span>
       </div>`:`
       <div class="slate-right"><span class="slate-chevron" id="chev-${i}">›</span></div>`;
@@ -783,7 +800,6 @@ function renderSlates(){
     const slateClasses=['slate',sl.isNow?'now':'',sl.isRest?'rest-mode':'',isSkipped?'skipped':''].filter(Boolean).join(' ');
 
     row.innerHTML=`
-      ${skipHtml}
       <div class="${slateClasses}" id="${sl.id}" onclick="toggleSlate(${i})">
         <div class="slate-bar ${barClass}"></div>
         ${scoreHtml}
@@ -794,6 +810,7 @@ function renderSlates(){
         </div>
         ${adjHtml}
       </div>
+      ${skipHtml}
       <div class="slate-detail${sl.isNow?' now-hl':''}" id="det-${i}">
         <div class="slate-detail-body">${sl.detail}</div>
         ${sl.adjustable?'<div class="slate-detail-why">Use ▲▼ to shift this time by 30 min — everything recalculates.</div>':''}
@@ -1091,7 +1108,7 @@ function toggleChrono(){
   S.chronotype=S.chronotype==='morning'?'evening':'morning';
   const btn=document.getElementById('chronoToggle');
   const isMorn=S.chronotype==='morning';
-  btn.textContent=isMorn?'Morning ⇄':'Evening ⇄';
+  btn.textContent=isMorn?'Early Bird ⇄':'Night Owl ⇄';
   btn.className='chrono-toggle'+(isMorn?'':' eve');
   S.lunchTime=isMorn?'12:30':'13:15';
   S.dinnerTime=isMorn?'19:00':'19:30';
@@ -1123,7 +1140,7 @@ function syncStressUI(){
 
 function cycleExercise(){ S.exercise=EX_S[(EX_S.indexOf(S.exercise)+1)%EX_S.length]; syncExUI(); refresh(); }
 function syncExUI(){
-  const l={off:'Exercise',walk:'Walk',longwalk:'Long walk',workout:'Workout',endurance:'Endurance'};
+  const l={off:'Inactive',walk:'Walk',longwalk:'Long walk',workout:'Workout',endurance:'Endurance'};
   const chip=document.getElementById('chip-ex');
   chip.textContent=l[S.exercise];
   chip.className=`chip ${S.exercise!=='off'?'cg':''}`;
@@ -1141,7 +1158,7 @@ function toggleFasting(){
   S.fasting=!S.fasting;
   const chip=document.getElementById('chip-fast');
   chip.className=`chip ${S.fasting?'cc':''}`;
-  chip.textContent=S.fasting?'IF':'Fasting';
+  chip.textContent=S.fasting?'Int. Fast':'3 Meals';
   refresh();
 }
 

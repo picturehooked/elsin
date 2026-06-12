@@ -142,6 +142,11 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
 .mitems li{font-size:.74rem;color:var(--tx2);padding:4px 0;border-bottom:1px solid var(--br);line-height:1.4}
 .mitems li:last-child{border-bottom:none}
 .mitems li strong{color:var(--tx);display:block}
+/* ── IMAGE OVERLAY ── */
+.img-ov{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.94);z-index:500;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom}
+.img-ov.on{display:block}
+.img-ov-img{width:100%;height:auto;display:block;padding-top:52px}
+.img-ov-close{position:fixed;top:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:1.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:501;-webkit-appearance:none;line-height:1;font-family:'DM Sans',sans-serif}
 .eat-wide{background:var(--sf);border:1px solid var(--br);border-radius:11px;padding:14px;margin-bottom:9px;cursor:pointer;transition:border-color .2s}
 .eat-wide:hover,.eat-wide.on{border-color:var(--ac)}
 .eat-wide-head{display:flex;align-items:center;gap:10px;justify-content:space-between}
@@ -385,21 +390,17 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
   <div class="eat-sec">
     <div class="eat-sec-title">MEAL STRATEGY</div>
     <div class="mgrid">
-      <div class="mcard" onclick="this.classList.toggle('on')">
+      <div class="mcard" onclick="openImg('ProteinImage.png')">
         <div class="micon">🥩</div><div class="mname">Protein first</div><div class="mtag">Any meal, always</div>
-        <div class="mdet"><ul class="mitems"><li><strong>Eggs</strong>Complete protein, keeps you full</li><li><strong>Chicken, turkey</strong>Lean, high satiety</li><li><strong>Fish</strong>Faster digestion, anti-inflammatory</li><li><strong>Greek yoghurt</strong>Protein + gut health</li><li><strong>Legumes</strong>Slower release — combine with grain</li></ul></div>
       </div>
-      <div class="mcard" onclick="this.classList.toggle('on')">
+      <div class="mcard" onclick="openImg('FatsImage.png')">
         <div class="micon">🥑</div><div class="mname">Fats second</div><div class="mtag">Extends how full you feel</div>
-        <div class="mdet"><ul class="mitems"><li><strong>Avocado</strong>Filling, heart-healthy fat</li><li><strong>Olive oil</strong>Anti-inflammatory</li><li><strong>Nuts</strong>Good fat, fibre, portable</li><li><strong>Cheese</strong>Protein + fat — watch portions</li></ul></div>
       </div>
-      <div class="mcard" onclick="this.classList.toggle('on')">
-        <div class="micon">🥦</div><div class="mname">Vegetables</div><div class="mtag">Fibre slows everything down</div>
-        <div class="mdet"><ul class="mitems"><li><strong>Leafy greens</strong>High fibre, low sugar</li><li><strong>Broccoli, cauliflower</strong>Dense, filling</li><li><strong>Courgette, peppers</strong>Volume without the carbs</li><li><strong>Root veg</strong>More sugar — treat as a carb</li></ul></div>
+      <div class="mcard" style="cursor:default;opacity:.7">
+        <div class="micon">🌾</div><div class="mname">Fibre</div><div class="mtag">The lever most people under-eat</div>
       </div>
-      <div class="mcard" onclick="this.classList.toggle('on')">
+      <div class="mcard" onclick="openImg('CarbImage.png')">
         <div class="micon">🍚</div><div class="mname">Carbs last</div><div class="mtag">Earn them with timing</div>
-        <div class="mdet"><ul class="mitems"><li><strong>Rice, oats</strong>Best after exercise</li><li><strong>Sweet potato</strong>With protein and fat</li><li><strong>Sourdough</strong>Slower than white bread</li><li><strong>Fruit</strong>Morning or post-exercise</li></ul></div>
       </div>
     </div>
     <div class="eat-sec-title">SNACKS</div>
@@ -456,6 +457,12 @@ body{font-family:'DM Sans',sans-serif;background:#111411;color:#E8E3D8;min-heigh
   <button class="nb" id="nb-learn" onclick="showTab('learn')"><div class="nb-icon">💡</div><div class="nb-lbl">Learn</div></button>
   <button class="nb" id="nb-eat" onclick="showTab('eat')"><div class="nb-icon">🍽</div><div class="nb-lbl">Eat</div></button>
 </nav>
+
+<!-- IMAGE OVERLAY -->
+<div class="img-ov" id="imgOv" onclick="if(event.target===this)closeImg()">
+  <button class="img-ov-close" onclick="closeImg()">×</button>
+  <img class="img-ov-img" id="imgOvSrc" src="" alt="">
+</div>
 
 </div>
 <script>
@@ -1190,6 +1197,18 @@ function onInputChange(){
 function toggleDeeper(){
   const c=document.getElementById('deeperCards'),chev=document.getElementById('deeperChevron');
   const on=c.classList.toggle('on'); chev.classList.toggle('on',on);
+}
+
+// ═══ IMAGE OVERLAY ═══
+function openImg(src){
+  document.getElementById('imgOvSrc').src=src;
+  document.getElementById('imgOv').classList.add('on');
+  document.body.style.overflow='hidden';
+}
+function closeImg(){
+  document.getElementById('imgOv').classList.remove('on');
+  document.getElementById('imgOvSrc').src='';
+  document.body.style.overflow='';
 }
 
 // ═══ TAB NAV ═══
